@@ -2,6 +2,8 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace transport.Migrations
 {
     /// <inheritdoc />
@@ -14,7 +16,8 @@ namespace transport.Migrations
                 name: "Countries",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CountryName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
@@ -30,7 +33,7 @@ namespace transport.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     PostCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CountryId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CountryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,7 +53,7 @@ namespace transport.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     PostCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CountryId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CountryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,7 +73,7 @@ namespace transport.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     PostCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CountryId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CountryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -139,6 +142,40 @@ namespace transport.Migrations
                         principalTable: "Principals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Countries",
+                columns: new[] { "Id", "CountryName" },
+                values: new object[,]
+                {
+                    { 1, "Austria" },
+                    { 2, "Belgia" },
+                    { 3, "Bułgaria" },
+                    { 4, "Chorwacja" },
+                    { 5, "Cypr" },
+                    { 6, "Czechy" },
+                    { 7, "Dania" },
+                    { 8, "Estonia" },
+                    { 9, "Finlandia" },
+                    { 10, "Francja" },
+                    { 11, "Grecja" },
+                    { 12, "Hiszpania" },
+                    { 13, "Irlandia" },
+                    { 14, "Litwa" },
+                    { 15, "Luksemburg" },
+                    { 16, "Łotwa" },
+                    { 17, "Malta" },
+                    { 18, "Holandia" },
+                    { 19, "Niemcy" },
+                    { 20, "Polska" },
+                    { 21, "Portugalia" },
+                    { 22, "Rumunia" },
+                    { 23, "Słowacja" },
+                    { 24, "Słowenia" },
+                    { 25, "Szwecja" },
+                    { 26, "Węgry" },
+                    { 27, "Włochy" }
                 });
 
             migrationBuilder.CreateIndex(

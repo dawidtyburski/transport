@@ -23,8 +23,11 @@ namespace transport.Migrations
 
             modelBuilder.Entity("transport.Models.Country", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CountryName")
                         .IsRequired()
@@ -34,6 +37,143 @@ namespace transport.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CountryName = "Austria"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CountryName = "Belgia"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CountryName = "Bułgaria"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CountryName = "Chorwacja"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CountryName = "Cypr"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CountryName = "Czechy"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CountryName = "Dania"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CountryName = "Estonia"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CountryName = "Finlandia"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CountryName = "Francja"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CountryName = "Grecja"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CountryName = "Hiszpania"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CountryName = "Irlandia"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CountryName = "Litwa"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CountryName = "Luksemburg"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CountryName = "Łotwa"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CountryName = "Malta"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CountryName = "Holandia"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CountryName = "Niemcy"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CountryName = "Polska"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CountryName = "Portugalia"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CountryName = "Rumunia"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CountryName = "Słowacja"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CountryName = "Słowenia"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CountryName = "Szwecja"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            CountryName = "Węgry"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            CountryName = "Włochy"
+                        });
                 });
 
             modelBuilder.Entity("transport.Models.DestinationAdress", b =>
@@ -49,9 +189,8 @@ namespace transport.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("CountryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PostCode")
                         .IsRequired()
@@ -78,9 +217,8 @@ namespace transport.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("CountryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PostCode")
                         .IsRequired()
@@ -193,9 +331,8 @@ namespace transport.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("CountryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PostCode")
                         .IsRequired()

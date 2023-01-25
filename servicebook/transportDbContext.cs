@@ -32,10 +32,6 @@ namespace transport
                 .WithOne(e => e.Country)
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Country>()
-                .Property(c => c.CountryName)
-                .IsRequired()
-                .HasMaxLength(20);
-            modelBuilder.Entity<Country>()
                 .HasData(
                     new Country { Id = 1, CountryName = "Austria" },
                     new Country { Id = 2, CountryName = "Belgia" },
@@ -68,26 +64,16 @@ namespace transport
             //--Order
             modelBuilder.Entity<Order>()
                 .Property(o => o.Title)
-                .IsRequired()
-                .HasMaxLength(20);
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Weight)
-                .IsRequired()
-                .HasMaxLength(10);
-            modelBuilder.Entity<Order>()
-                .Property(o => o.PalletPlace)
-                .IsRequired()
-                .HasMaxLength(2);
-            modelBuilder.Entity<Order>()
-                .Property(o => o.ContactEmail)
                 .IsRequired();
             modelBuilder.Entity<Order>()
-                .Property(o => o.ContactPhone)
+                .Property(o => o.Weight)
+                .IsRequired();
+            modelBuilder.Entity<Order>()
+                .Property(o => o.PalletPlace)
                 .IsRequired();
             modelBuilder.Entity<Order>()
                 .Property(o => o.Price)
-                .IsRequired()
-                .HasMaxLength(5);
+                .IsRequired();
             modelBuilder.Entity<Order>()
                 .Property(o => o.Description)
                 .IsRequired(false);
@@ -95,8 +81,7 @@ namespace transport
             //--Principal
             modelBuilder.Entity<Principal>()
                 .Property(p => p.Name)
-                .IsRequired()
-                .HasMaxLength(20);
+                .IsRequired();
             modelBuilder.Entity<Principal>()
                 .Property(p => p.ContactEmail)
                 .IsRequired();
@@ -108,12 +93,10 @@ namespace transport
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<PrincipalAdress>()
                 .Property(pr => pr.City)
-                .IsRequired()
-                .HasMaxLength(20);
+                .IsRequired();
             modelBuilder.Entity<PrincipalAdress>()
                .Property(pr => pr.PostCode)
-               .IsRequired()
-               .HasMaxLength(10);
+               .IsRequired();
 
             //--InitialAdress
             modelBuilder.Entity<InitialAdress>()
@@ -122,12 +105,10 @@ namespace transport
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<InitialAdress>()
                 .Property(i => i.City)
-                .IsRequired()
-                .HasMaxLength(20);
+                .IsRequired();
             modelBuilder.Entity<InitialAdress>()
                .Property(i => i.PostCode)
-               .IsRequired()
-               .HasMaxLength(10);
+               .IsRequired();
 
             //--DestinationAdress
             modelBuilder.Entity<DestinationAdress>()
@@ -136,12 +117,10 @@ namespace transport
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<DestinationAdress>()
                 .Property(d => d.City)
-                .IsRequired()
-                .HasMaxLength(20);
+                .IsRequired();
             modelBuilder.Entity<DestinationAdress>()
                .Property(d => d.PostCode)
-               .IsRequired()
-               .HasMaxLength(10);
+               .IsRequired();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

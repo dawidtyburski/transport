@@ -6,8 +6,9 @@
         public string City { get; set; }
         public string PostCode { get; set; }
 
+        public int CountryId { get; set; }
         public virtual Country Country { get; set; }
 
-        public virtual ICollection<Principal> Principals { get; set; }
+        public virtual List<Principal> Principals { get; set; }
     }
 }

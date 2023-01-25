@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using transport;
 
@@ -10,9 +11,11 @@ using transport;
 namespace transport.Migrations
 {
     [DbContext(typeof(transportDbContext))]
-    partial class transportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230125144339_ids")]
+    partial class ids
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,11 +238,22 @@ namespace transport.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DestinationAdressId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Directly")
+                        .HasColumnType("bit");
 
                     b.Property<int>("InitialAdressId")
                         .HasColumnType("int");
@@ -278,10 +292,6 @@ namespace transport.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccessCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContactEmail")
                         .IsRequired()

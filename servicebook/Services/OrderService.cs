@@ -24,6 +24,20 @@ namespace transport.Services
 
             return order.Id;
         }
+        public bool Edit(int id, EditOrderDto dto)
+        {
+            var order = _dbContext
+                .Orders
+                .FirstOrDefault(o => o.Id == id);
+            
+            if (order is null) return false;
+
+            order.Price = dto.Price;
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
         public bool Delete(int id)
         {
             var order = _dbContext

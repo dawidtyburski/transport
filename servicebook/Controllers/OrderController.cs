@@ -27,10 +27,25 @@ namespace transport.Controllers
             var id = _orderService.CreateOrder(dto);
             return Created($"/api/order/{id}", null);
         }
+        [HttpPut("{id}")]
+        public ActionResult Edit([FromBody] EditOrderDto dto, [FromRoute]int id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isUpdated = _orderService.Edit(id, dto);
+            if(!isUpdated)
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute]int id)
         {
-            var isDeleted = _orderService.DeleteOrder(id);
+            var isDeleted = _orderService.Delete(id);
             
             if(isDeleted)
             {

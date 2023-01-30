@@ -11,8 +11,8 @@ using transport;
 namespace transport.Migrations
 {
     [DbContext(typeof(transportDbContext))]
-    [Migration("20230125144339_ids")]
-    partial class ids
+    [Migration("20230130183548_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -204,7 +204,49 @@ namespace transport.Migrations
                     b.ToTable("DestinationAdresses");
                 });
 
-            modelBuilder.Entity("transport.Models.InitialAdress", b =>
+            modelBuilder.Entity("transport.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DestinationAdressId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InitialAdressId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("PalletPlace")
+                        .HasColumnType("real");
+
+                    b.Property<int>("PickupAdressId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Weight")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DestinationAdressId");
+
+                    b.HasIndex("PickupAdressId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("transport.Models.PickupAdress", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,128 +272,10 @@ namespace transport.Migrations
                     b.ToTable("InitialAdresses");
                 });
 
-            modelBuilder.Entity("transport.Models.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ContactEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactPhone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DestinationAdressId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Directly")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("InitialAdressId")
-                        .HasColumnType("int");
-
-                    b.Property<float>("PalletPlace")
-                        .HasColumnType("real");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PrincipalId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Weight")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DestinationAdressId");
-
-                    b.HasIndex("InitialAdressId");
-
-                    b.HasIndex("PrincipalId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("transport.Models.Principal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ContactEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PrincipalAdressId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PrincipalAdressId");
-
-                    b.ToTable("Principals");
-                });
-
-            modelBuilder.Entity("transport.Models.PrincipalAdress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PostCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.ToTable("PrincipalsAdresses");
-                });
-
             modelBuilder.Entity("transport.Models.DestinationAdress", b =>
                 {
                     b.HasOne("transport.Models.Country", "Country")
                         .WithMany("DestinationAdresses")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Country");
-                });
-
-            modelBuilder.Entity("transport.Models.InitialAdress", b =>
-                {
-                    b.HasOne("transport.Models.Country", "Country")
-                        .WithMany("InitialAdresses")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -367,40 +291,21 @@ namespace transport.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("transport.Models.InitialAdress", "InitialAdress")
+                    b.HasOne("transport.Models.PickupAdress", "PickupAdress")
                         .WithMany("Orders")
-                        .HasForeignKey("InitialAdressId")
+                        .HasForeignKey("PickupAdressId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("transport.Models.Principal", "Principal")
-                        .WithMany("Orders")
-                        .HasForeignKey("PrincipalId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("DestinationAdress");
 
-                    b.Navigation("InitialAdress");
-
-                    b.Navigation("Principal");
+                    b.Navigation("PickupAdress");
                 });
 
-            modelBuilder.Entity("transport.Models.Principal", b =>
-                {
-                    b.HasOne("transport.Models.PrincipalAdress", "PrincipalAdress")
-                        .WithMany("Principals")
-                        .HasForeignKey("PrincipalAdressId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("PrincipalAdress");
-                });
-
-            modelBuilder.Entity("transport.Models.PrincipalAdress", b =>
+            modelBuilder.Entity("transport.Models.PickupAdress", b =>
                 {
                     b.HasOne("transport.Models.Country", "Country")
-                        .WithMany("PrincipalAdresses")
+                        .WithMany("InitialAdresses")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -413,8 +318,6 @@ namespace transport.Migrations
                     b.Navigation("DestinationAdresses");
 
                     b.Navigation("InitialAdresses");
-
-                    b.Navigation("PrincipalAdresses");
                 });
 
             modelBuilder.Entity("transport.Models.DestinationAdress", b =>
@@ -422,19 +325,9 @@ namespace transport.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("transport.Models.InitialAdress", b =>
+            modelBuilder.Entity("transport.Models.PickupAdress", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("transport.Models.Principal", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("transport.Models.PrincipalAdress", b =>
-                {
-                    b.Navigation("Principals");
                 });
 #pragma warning restore 612, 618
         }

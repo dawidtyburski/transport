@@ -11,15 +11,15 @@ namespace transport.Models
         public float PalletPlace { get; set; }       
         public int Price { get; set; }
 
-        public string City1 { get; set; }
-        public string City2 { get; set; }
+        public string PickupCity { get; set; }
+        public string PickupPostCode { get; set; }
+        public string PickupCountry { get; set; }
 
-        public string PostCode1 { get; set; }
-        public string PostCode2 { get; set; }
+        public string DestCity { get; set; }
+        public string DestPostCode { get; set; }
+        public string DestCountry { get; set; }
 
-        public string Country1 { get; set; }
-        public string Country2 { get; set; }
 
-        public string Principal { get; set; }
+
     }
 }

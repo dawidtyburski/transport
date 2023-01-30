@@ -1,78 +1,62 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using transport.Models;
+using transport.Services;
 
 namespace transport.Controllers
 {
     [Route("api/order")]
     public class OrderController : ControllerBase
     {
-        private readonly transportDbContext _dbContext;
+        private readonly IOrderService _orderService;
 
-        public OrderController(transportDbContext dbcontext)
+        public OrderController(IOrderService orderService) 
         {
-            _dbContext = dbcontext;
+            _orderService= orderService;
+        }
+        
+        [HttpPost]
+        public ActionResult CreateOrder([FromBody] CreateOrderDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var id = _orderService.CreateOrder(dto);
+            return Created($"/api/order/{id}", null);
+        }
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute]int id)
+        {
+            var isDeleted = _orderService.DeleteOrder(id);
+            
+            if(isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
         }
         [HttpGet]
         public ActionResult<IEnumerable<OrderDto>> GetAll()
         {
-            var orders = _dbContext
-                .Orders
-                .ToList();
+            var orders = _orderService.GetAll();
 
-            var ordersDtos = orders.Select(o => new OrderDto()
-            {
-                Title = o.Title,
-                Description = o.Description,
-                Weight = o.Weight,
-                PalletPlace = o.PalletPlace,
-                Price = o.Price,
-                PostCode1 = o.InitialAdress.PostCode,
-                City1 = o.InitialAdress.City,
-                Country1 = o.InitialAdress.Country.CountryName,
-                PostCode2 = o.DestinationAdress.PostCode,
-                City2 = o.DestinationAdress.City,
-                Country2 = o.DestinationAdress.Country.CountryName,
-                Principal = o.Principal.Name
-
-            });
-
-            return Ok(ordersDtos);
+            return Ok(orders);
         }
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<OrderDto>> GetPrincipalOrders([FromRoute] int id)
+        public ActionResult<IEnumerable<OrderDto>> Get([FromRoute] int id)
         {
-            var principalOrders = _dbContext
-                .Orders
-                .Include(o => o.InitialAdress)
-                .Include(o => o.DestinationAdress)
-                .Include(o => o.Principal)
-                .ToList().Where(o => o.PrincipalId == id);
-            
-            
-            if (principalOrders is null)
+            var order = _orderService.Get(id);
+
+            if(order is null)
             {
                 return NotFound();
             }
 
-            var principalOrdersDtos = principalOrders.Select(o => new OrderDto()
-            {
-                Title = o.Title,
-                Description = o.Description,
-                Weight = o.Weight,
-                PalletPlace = o.PalletPlace,
-                Price = o.Price,
-                PostCode1 = o.InitialAdress.PostCode,
-                City1 = o.InitialAdress.City,
-                Country1 = o.InitialAdress.Country.CountryName,
-                PostCode2 = o.DestinationAdress.PostCode,
-                City2 = o.DestinationAdress.City,
-                Country2 = o.DestinationAdress.Country.CountryName,
-                Principal = o.Principal.Name
-
-            });
-
-            return Ok(principalOrdersDtos);
+            return Ok(order);
         }
     }
 }

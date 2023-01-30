@@ -18,7 +18,7 @@ namespace transport.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CountryName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    CountryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,8 +31,8 @@ namespace transport.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    PostCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -51,8 +51,8 @@ namespace transport.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    PostCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -66,62 +66,19 @@ namespace transport.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PrincipalsAdresses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    PostCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CountryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PrincipalsAdresses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PrincipalsAdresses_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Principals",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    ContactEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrincipalAdressId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Principals", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Principals_PrincipalsAdresses_PrincipalAdressId",
-                        column: x => x.PrincipalAdressId,
-                        principalTable: "PrincipalsAdresses",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Weight = table.Column<float>(type: "real", maxLength: 10, nullable: false),
-                    PalletPlace = table.Column<float>(type: "real", maxLength: 2, nullable: false),
-                    Directly = table.Column<bool>(type: "bit", nullable: false),
-                    ContactEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ContactPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<int>(type: "int", maxLength: 5, nullable: false),
+                    Weight = table.Column<float>(type: "real", nullable: false),
+                    PalletPlace = table.Column<float>(type: "real", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false),
                     InitialAdressId = table.Column<int>(type: "int", nullable: false),
-                    DestinationAdressId = table.Column<int>(type: "int", nullable: false),
-                    PrincipalId = table.Column<int>(type: "int", nullable: false)
+                    PickupAdressId = table.Column<int>(type: "int", nullable: false),
+                    DestinationAdressId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,16 +89,10 @@ namespace transport.Migrations
                         principalTable: "DestinationAdresses",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Orders_InitialAdresses_InitialAdressId",
-                        column: x => x.InitialAdressId,
+                        name: "FK_Orders_InitialAdresses_PickupAdressId",
+                        column: x => x.PickupAdressId,
                         principalTable: "InitialAdresses",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Orders_Principals_PrincipalId",
-                        column: x => x.PrincipalId,
-                        principalTable: "Principals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -194,24 +145,9 @@ namespace transport.Migrations
                 column: "DestinationAdressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_InitialAdressId",
+                name: "IX_Orders_PickupAdressId",
                 table: "Orders",
-                column: "InitialAdressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_PrincipalId",
-                table: "Orders",
-                column: "PrincipalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Principals_PrincipalAdressId",
-                table: "Principals",
-                column: "PrincipalAdressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PrincipalsAdresses_CountryId",
-                table: "PrincipalsAdresses",
-                column: "CountryId");
+                column: "PickupAdressId");
         }
 
         /// <inheritdoc />
@@ -225,12 +161,6 @@ namespace transport.Migrations
 
             migrationBuilder.DropTable(
                 name: "InitialAdresses");
-
-            migrationBuilder.DropTable(
-                name: "Principals");
-
-            migrationBuilder.DropTable(
-                name: "PrincipalsAdresses");
 
             migrationBuilder.DropTable(
                 name: "Countries");

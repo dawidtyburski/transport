@@ -7,14 +7,43 @@ namespace transport
     public class transportDbContext : DbContext
     {
         public DbSet<Order> Orders { get; set; }
-        public DbSet<PickupAdress> InitialAdresses { get; set; }
+        public DbSet<PickupAdress> PickupAdresses { get; set; }
         public DbSet<DestinationAdress> DestinationAdresses { get; set; }
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         private string _connectionString = 
             "Server=(localdb)\\mssqllocaldb;Database=TransportDb;Trusted_Connection=True;";
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //--User
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.FirstName)
+                .IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.LastName)
+                .IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.PhoneNumber)
+                .IsRequired();
+            //--Role
+            modelBuilder.Entity<Role>()
+                .HasMany(i => i.Users)
+                .WithOne(e => e.Role)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Role>()
+                .Property(u => u.Name)
+                .IsRequired();
+            modelBuilder.Entity<Role>()
+                .HasData(
+                new Role { Id = 1, Name = "User"},
+                new Role { Id = 2, Name = "Admin"}
+                );
             //--Order
             modelBuilder.Entity<Order>()
                 .Property(o => o.Title)

@@ -1,10 +1,17 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using transport.Models;
 
 namespace transport.Services
 {
+    public interface IOrderService
+    {
+        int CreateOrder(CreateOrderDto dto);
+        bool Delete(int id);
+        bool Edit(int id, EditOrderDto dto);
+        OrderDto Get(int id);
+        IEnumerable<OrderDto> GetAll();
+    }
     public class OrderService : IOrderService
     {
         private readonly transportDbContext _dbContext;
@@ -20,6 +27,13 @@ namespace transport.Services
         {
             var order = _mapper.Map<Order>(dto);
             _dbContext.Orders.Add(order);
+
+            var pickupAdress = _mapper.Map<PickupAdress>(dto);
+            _dbContext.PickupAdresses.Add(pickupAdress);
+
+            var destAdress = _mapper.Map<DestinationAdress>(dto);
+            _dbContext.DestinationAdresses.Add(destAdress);
+
             _dbContext.SaveChanges();
 
             return order.Id;

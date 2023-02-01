@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using transport.Models;
@@ -6,7 +7,9 @@ using transport.Services;
 
 namespace transport.Controllers
 {
-    [Route("api/order")]
+    [Route("api/orders")]
+    [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -55,6 +58,7 @@ namespace transport.Controllers
             return NotFound();
         }
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<OrderDto>> GetAll()
         {
             var orders = _orderService.GetAll();
@@ -62,6 +66,7 @@ namespace transport.Controllers
             return Ok(orders);
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<OrderDto>> Get([FromRoute] int id)
         {
             var order = _orderService.Get(id);

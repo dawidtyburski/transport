@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using transport.Models;
 using transport.Services;
 
@@ -23,6 +24,16 @@ namespace transport.Controllers
                 return BadRequest("Email is taken");
             }
             return Ok();
+        }
+        [HttpPost("login")]
+        public ActionResult Login([FromBody] LoginDto dto)
+        {
+            string token = _accountService.GenerateJwt(dto);
+            if(token == string.Empty)
+            {
+                return BadRequest("Invalid email or password");
+            }
+            return Ok(token);
         }
     }
 }

@@ -17,7 +17,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
 var authenticationSettings = new AuthenticationSettings();
-
+builder.Services.AddSingleton(authenticationSettings);
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
 builder.Services.AddAuthentication(option =>

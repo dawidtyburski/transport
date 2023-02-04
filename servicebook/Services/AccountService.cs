@@ -39,7 +39,9 @@ namespace transport.Services
             {
                 return string.Empty;
             }
+            
 
+            
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -48,7 +50,7 @@ namespace transport.Services
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(_authenticationSettings.JwtExpireDays);
+            var expires = DateTime.Now.AddDays(7);
 
             var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer,
                 _authenticationSettings.JwtIssuer,
@@ -73,6 +75,7 @@ namespace transport.Services
                 PhoneNumber = dto.PhoneNumber,
                 RoleId = dto.RoleId
             };
+
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             newUser.PasswordHash = hashedPassword;
             _dbContext.Users.Add(newUser);

@@ -33,10 +33,6 @@ namespace transport
                 .IsRequired();
             //--Role
             modelBuilder.Entity<Role>()
-                .HasMany(i => i.Users)
-                .WithOne(e => e.Role)
-                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<Role>()
                 .Property(u => u.Name)
                 .IsRequired();
             modelBuilder.Entity<Role>()

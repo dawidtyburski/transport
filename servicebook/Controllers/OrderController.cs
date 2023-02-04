@@ -58,7 +58,7 @@ namespace transport.Controllers
             return NotFound();
         }
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "User")]
         public ActionResult<IEnumerable<OrderDto>> GetAll()
         {
             var orders = _orderService.GetAll();

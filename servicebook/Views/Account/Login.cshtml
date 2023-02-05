@@ -1,0 +1,25 @@
+﻿@model transport.Models.LoginDto
+
+@{
+}
+
+<div>
+    <h6 class="text-danger">@TempData["LoginError"]</h6>
+    <form method="post" asp-action="Login" asp-controller="Account">
+        <div class="mb-3">
+            <label asp-for="Email"></label>
+            <input class="form-control" asp-for="Email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Password"></label>
+            <input type="password" class="form-control" asp-for="Password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary" type="submit">Zaloguj</button>
+            <button class="btn btn-primary" type="button" onclick="window.location.href= '/api/account/register';">Załóż konto</button>
+        </div>
+    </form>
+</div>
+

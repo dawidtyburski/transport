@@ -7,7 +7,7 @@ namespace transport.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
 
@@ -25,15 +25,22 @@ namespace transport.Controllers
             }
             return Ok();
         }
-        [HttpPost("login")]
-        public ActionResult Login([FromBody] LoginDto dto)
+        [HttpGet("login")]
+        public ActionResult Login()
         {
-            string token = _accountService.GenerateJwt(dto);
-            if(token == string.Empty)
+            return View();
+        }
+        [HttpPost("login")]
+        public ActionResult Login([FromForm] LoginDto dto)
+        {
+            bool result = _accountService.GenerateJwt(dto);
+            if(!result)
             {
-                return BadRequest("Invalid email or password");
+                TempData["LoginError"] = "Błędny email lub hasło";
+                return View();
             }
-            return Ok(token);
+            return Redirect("api/order/all");
+
         }
     }
 }

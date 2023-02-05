@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using transport;
 using transport.Services;
+using transport.Authorization;
 using transport.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -12,6 +13,8 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,17 +38,17 @@ builder.Services.AddAuthentication(option =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
     };
 });
-//IdentityModelEventSource.ShowPII = true;
-
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+options.SuppressModelStateInvalidFilter = true
+);
 builder.Services.AddControllersWithViews();
+builder.Services.AddMvc();
 builder.Services.AddDbContext<transportDbContext>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
 builder.Services.AddSwaggerGen();
-
-
-
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
@@ -56,6 +59,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 app.UseAuthentication();
 
 app.UseHttpsRedirection();
@@ -66,12 +70,9 @@ app.UseSwaggerUI(c =>
 });
 app.UseStaticFiles();
 
-
 app.UseRouting();
 
 app.UseAuthorization();
-
-
 
 app.MapControllerRoute(
     name: "default",

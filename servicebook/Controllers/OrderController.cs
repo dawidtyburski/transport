@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using transport.Models;
 using transport.Services;
 
 namespace transport.Controllers
 {
-    [Route("api/orders")]
+    [Route("api/order")]
     [ApiController]
     [Authorize]
-    public class OrderController : ControllerBase
+    public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
 
@@ -20,14 +21,14 @@ namespace transport.Controllers
         }
         
         [HttpPost]
-        public ActionResult CreateOrder([FromBody] CreateOrderDto dto)
+        public ActionResult Create([FromBody] CreateOrderDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            var id = _orderService.CreateOrder(dto);
+            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var id = _orderService.Create(dto, userId);
             return Created($"/api/order/{id}", null);
         }
         [HttpPut("{id}")]
@@ -38,7 +39,7 @@ namespace transport.Controllers
                 return BadRequest(ModelState);
             }
 
-            var isUpdated = _orderService.Edit(id, dto);
+            var isUpdated = _orderService.Edit(id, dto, User);
             if(!isUpdated)
             {
                 return NotFound();
@@ -48,7 +49,7 @@ namespace transport.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute]int id)
         {
-            var isDeleted = _orderService.Delete(id);
+            var isDeleted = _orderService.Delete(id, User);
             
             if(isDeleted)
             {
@@ -57,11 +58,11 @@ namespace transport.Controllers
 
             return NotFound();
         }
-        [HttpGet]
+        [HttpGet("all")]
         [Authorize(Roles = "User")]
-        public ActionResult<IEnumerable<OrderDto>> GetAll()
+        public ActionResult<IEnumerable<OrderDto>> GetAll([FromQuery]OrderQuery query)
         {
-            var orders = _orderService.GetAll();
+            var orders = _orderService.GetAll(query);
 
             return Ok(orders);
         }

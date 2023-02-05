@@ -10,7 +10,7 @@ namespace transport.Services
 {
     public interface IAccountService
     {
-        string GenerateJwt(LoginDto dto);
+        bool GenerateJwt(LoginDto dto);
         bool RegisterUser(RegisterUserDto dto);
     }
     public class AccountService : IAccountService
@@ -24,24 +24,22 @@ namespace transport.Services
             _authenticationSettings = authenticationSettings;
         }
 
-        public string GenerateJwt(LoginDto dto)
+        public bool GenerateJwt(LoginDto dto)
         {
             var user = _dbContext.Users
                 .Include(r => r.Role)
                 .FirstOrDefault(u => u.Email== dto.Email);
             if(user is null)
             {
-                return string.Empty;
+                return false;
             }
 
             bool result = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
             if(!result)
             {
-                return string.Empty;
+                return false;
             }
-            
-
-            
+                      
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -58,7 +56,8 @@ namespace transport.Services
                 expires: expires,
                 signingCredentials: cred);
             var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(token);
+            tokenHandler.WriteToken(token);
+            return true;
         }
 
         public bool RegisterUser(RegisterUserDto dto) 

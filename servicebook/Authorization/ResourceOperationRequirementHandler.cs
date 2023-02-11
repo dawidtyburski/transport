@@ -14,10 +14,10 @@ namespace transport.Authorization
                 context.Succeed(requirement);
             }
             var userId = context.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            if(order.CreatedById == int.Parse(userId))
+            /*if(order.UserId == userId)
             {
                 context.Succeed(requirement);
-            }
+            }*/
 
             return Task.CompletedTask;
         }

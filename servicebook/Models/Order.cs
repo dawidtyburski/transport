@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace transport.Models
 {
@@ -10,9 +11,7 @@ namespace transport.Models
         public float Weight { get; set; } 
         public float PalletPlace { get; set; }       
         public int Price { get; set; }
-        
-        public int? CreatedById { get; set; }
-        public virtual User CreatedBy { get; set; }
+
 
         public int PickupAdressId { get; set; }
         public virtual PickupAdress PickupAdress { get; set; }

@@ -1,25 +1,42 @@
 ﻿using AutoMapper;
+using Azure.Core;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using transport.Models;
 using transport.Services;
+using transport.Countries;
 
 namespace transport.Controllers
 {
-    [Route("api/order")]
-    [ApiController]
+    [Route("orders")]
     [Authorize]
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
 
+
         public OrderController(IOrderService orderService) 
         {
-            _orderService= orderService;
+            _orderService = orderService;
         }
-        
+        [AllowAnonymous]
+        [HttpGet("index")]
+        public IActionResult Search() 
+        {
+            List<string> countries = Enum.GetNames(typeof(Countries.Countries)).ToList();
+            return View(countries);
+        }
+        [AllowAnonymous]
+        [HttpPost("index")]
+        public IActionResult Search(string from)
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult Create([FromBody] CreateOrderDto dto)
         {
@@ -31,7 +48,7 @@ namespace transport.Controllers
             var id = _orderService.Create(dto, userId);
             return Created($"/api/order/{id}", null);
         }
-        [HttpPut("{id}")]
+        [HttpPut("order/{id}")]
         public ActionResult Edit([FromBody] EditOrderDto dto, [FromRoute]int id)
         {
             if(!ModelState.IsValid)
@@ -46,7 +63,7 @@ namespace transport.Controllers
             }
             return Ok();
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("order/{id}")]
         public ActionResult Delete([FromRoute]int id)
         {
             var isDeleted = _orderService.Delete(id, User);
@@ -58,15 +75,15 @@ namespace transport.Controllers
 
             return NotFound();
         }
-        [HttpGet("all")]
-        [Authorize(Roles = "User")]
-        public ActionResult<IEnumerable<OrderDto>> GetAll([FromQuery]OrderQuery query)
+        [AllowAnonymous]
+        [HttpGet("all")]        
+        public ActionResult<IEnumerable<OrderDto>> GetAll(string from, string to)
         {
-            var orders = _orderService.GetAll(query);
 
-            return Ok(orders);
+            var orders = _orderService.GetAll(from, to);
+            return View(orders);
         }
-        [HttpGet("{id}")]
+        [HttpGet("order/{id}")]
         [AllowAnonymous]
         public ActionResult<IEnumerable<OrderDto>> Get([FromRoute] int id)
         {

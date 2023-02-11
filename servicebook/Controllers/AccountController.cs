@@ -1,46 +1,110 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using transport.Models;
 using transport.Services;
 
 namespace transport.Controllers
 {
-    [Route("api/account")]
-    [ApiController]
+    [Route("account")]
+    [Authorize]
     public class AccountController : Controller
     {
-        private readonly IAccountService _accountService;
 
-        public AccountController(IAccountService accountService)
+        private UserManager<CustomUser> _userManager;
+        private SignInManager<CustomUser> _signInManager;
+
+        public RoleManager<IdentityRole> _roleManager;
+
+        public AccountController(UserManager<CustomUser> userManager,
+                                SignInManager<CustomUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
-            _accountService = accountService;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
         }
-        [HttpPost("register")]
-        public ActionResult RegisterUser([FromBody] RegisterUserDto dto)
-        {
-            var isCreated =_accountService.RegisterUser(dto);
-            if(!isCreated)
-            {
-                return BadRequest("Email is taken");
-            }
-            return Ok();
-        }
-        [HttpGet("login")]
-        public ActionResult Login()
+        [AllowAnonymous]
+        [HttpGet("register")]
+        public IActionResult Register()
         {
             return View();
         }
-        [HttpPost("login")]
-        public ActionResult Login([FromForm] LoginDto dto)
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterModel model)
         {
-            bool result = _accountService.GenerateJwt(dto);
-            if(!result)
+            if (ModelState.IsValid)
             {
-                TempData["LoginError"] = "Błędny email lub hasło";
-                return View();
-            }
-            return Redirect("api/order/all");
+                var user = new CustomUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    FullName = $"{model.FirstName} {model.LastName}",
+                    PhoneNumber= model.PhoneNumber
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                await _userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
 
+                if (result.Succeeded)
+                {
+                    if (await _roleManager.RoleExistsAsync("Administrator") == false)
+                    {
+                        IdentityRole newRole = new IdentityRole("Administrator");
+                        await _roleManager.CreateAsync(newRole);
+                    }
+                    if (await _roleManager.RoleExistsAsync("User") == false)
+                    {
+                        IdentityRole newRole = new IdentityRole("User");
+                        await _roleManager.CreateAsync(newRole);
+                    }
+                    var role = _roleManager.FindByNameAsync("User").Result;
+
+                    if (role != null)
+                    {
+                        IdentityResult roleresult = await _userManager.AddToRoleAsync(user, role.Name);
+                    }
+                    return RedirectToAction("Login", "Account");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View(model);
+        }
+        [AllowAnonymous]
+        [HttpGet("login")]
+        public IActionResult Login()
+        {
+            return View();
+        }
+        [AllowAnonymous]
+        [HttpPost("login")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginModel loginModel)
+        {
+            if (ModelState.IsValid)
+            {
+
+                    if ((await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false, false)).Succeeded)
+                    {                      
+                        return Redirect("/Home/Index");
+                    }
+                                   
+            }
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                return View(loginModel);
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction("Login");
         }
     }
 }

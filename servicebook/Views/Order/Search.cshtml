@@ -1,0 +1,16 @@
+﻿<div class="container col-12 p-3 my-3 bg-dark text-white">
+    <select>
+        @foreach (string item in Model)
+        {
+            <option value="@item">@item</option>
+        }
+    </select>
+    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+    <select>
+        @foreach (string item in Model)
+        {
+            <option value="@item">@item</option>
+        }
+    </select>
+</div>
+    

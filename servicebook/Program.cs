@@ -18,38 +18,24 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var authenticationSettings = new AuthenticationSettings();
-builder.Configuration.GetSection("Jwt").Bind(authenticationSettings);
-builder.Services.AddSingleton(authenticationSettings);
-builder.Services.AddAuthentication(option =>
-{
-    option.DefaultAuthenticateScheme = "Bearer";
-    option.DefaultScheme = "Bearer";
-    option.DefaultChallengeScheme = "Bearer";
 
-}).AddJwtBearer(cfg =>
-{
-    cfg.RequireHttpsMetadata = false;
-    cfg.SaveToken = true;
-    cfg.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidIssuer = authenticationSettings.JwtIssuer,
-        ValidAudience = authenticationSettings.JwtIssuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
-    };
-});
 builder.Services.Configure<ApiBehaviorOptions>(options =>
-options.SuppressModelStateInvalidFilter = true
-);
+options.SuppressModelStateInvalidFilter = true);
 builder.Services.AddControllersWithViews();
-builder.Services.AddMvc();
 builder.Services.AddDbContext<transportDbContext>();
+
+builder.Services.AddIdentity<CustomUser, IdentityRole>() 
+ .AddEntityFrameworkStores<transportDbContext>()
+ .AddDefaultTokenProviders();
+builder.Services.AddMemoryCache();
+builder.Services.AddSession();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
-builder.Services.AddSwaggerGen();
-builder.Services.AddAuthorization();
+//builder.Services.AddSwaggerGen();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -60,22 +46,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseAuthentication();
-
 app.UseHttpsRedirection();
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Transport API");
-});
+
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+                      name: "ord", pattern: "orders/index", new { controller = "Order", action = "Search" });
 
 app.Run();

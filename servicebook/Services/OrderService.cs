@@ -5,7 +5,6 @@ using System.Security.Claims;
 using transport.Models;
 using transport.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 
 namespace transport.Services
 {
@@ -15,7 +14,7 @@ namespace transport.Services
         bool Delete(int id, ClaimsPrincipal user);
         bool Edit(int id, EditOrderDto dto, ClaimsPrincipal user);
         OrderDto Get(int id);
-        PageResult<OrderDto> GetAll(OrderQuery query);
+        IEnumerable<OrderDto> GetAll(string from, string to);
     }
     public class OrderService : IOrderService
     {
@@ -33,19 +32,20 @@ namespace transport.Services
         public int Create(CreateOrderDto dto, int userId)
         {
 
-            var order = _mapper.Map<Order>(dto);
-            order.CreatedById = userId;
-            _dbContext.Orders.Add(order);
+            /* var order = _mapper.Map<Order>(dto);
+             order.UserId = userId.ToString();
+             _dbContext.Orders.Add(order);
 
-            var pickupAdress = _mapper.Map<PickupAdress>(dto);
-            _dbContext.PickupAdresses.Add(pickupAdress);
+             var pickupAdress = _mapper.Map<PickupAdress>(dto);
+             _dbContext.PickupAdresses.Add(pickupAdress);
 
-            var destAdress = _mapper.Map<DestinationAdress>(dto);
-            _dbContext.DestinationAdresses.Add(destAdress);
+             var destAdress = _mapper.Map<DestinationAdress>(dto);
+             _dbContext.DestinationAdresses.Add(destAdress);
 
-            _dbContext.SaveChanges();
+             _dbContext.SaveChanges();
 
-            return order.Id;
+             return order.Id;*/
+            return 1;
         }
         public bool Edit(int id, EditOrderDto dto, ClaimsPrincipal user)
         {
@@ -79,42 +79,17 @@ namespace transport.Services
             return true;
 
         }
-        public PageResult<OrderDto> GetAll(OrderQuery query)
+        public IEnumerable<OrderDto> GetAll(string from, string to)
         {
-            var baseQuery = _dbContext
+            var orders = _dbContext
                 .Orders
                 .Include(o => o.PickupAdress)
                 .Include(o => o.DestinationAdress)
-                .Where(o => (query.from == null &&
-                            query.to == null) || (o.PickupAdress.Country == query.from && o.DestinationAdress.Country == query.to))
-                .Skip(query.pageSize * (query.pageNumber - 1));
-
-            if (!string.IsNullOrEmpty(query.sortBy))
-            {
-                var columnSelectors = new Dictionary<string, Expression<Func<Order, object>>>
-                {
-                    {nameof(Order.PalletPlace),o => o.PalletPlace },
-                    {nameof(Order.Weight),o => o.Weight },
-                    {nameof(Order.Price),o => o.Price }
-                };
-
-                var selectedColumn = columnSelectors[query.sortBy];
-
-                baseQuery = query.sortDirection == SortDirection.ASC
-                    ? baseQuery.OrderBy(selectedColumn)
-                    : baseQuery.OrderByDescending(selectedColumn);
-            }
-
-            var orders = baseQuery
-                .Skip(query.pageSize * (query.pageNumber - 1))
-                .Take(query.pageSize)
+                .Where(o => (from==null&&
+                            to==null) || (o.PickupAdress.Country == from && o.DestinationAdress.Country == to))
                 .ToList();
 
-            var totalItemsCount = baseQuery.Count();
-
-            var ordersDtos = _mapper.Map<List<OrderDto>>(orders);
-
-            var result = new PageResult<OrderDto>(ordersDtos, totalItemsCount, query.pageSize, query.pageNumber);
+            var result = _mapper.Map<List<OrderDto>>(orders);
 
             return result;
         }

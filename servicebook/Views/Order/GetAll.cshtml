@@ -1,5 +1,89 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<transport.Models.OrderDto>
+
+<h1>Zlecenia</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PalletPlace)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PickupPostCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PickupCity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PickupCountry)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DestPostCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DestCity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DestCountry)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PalletPlace)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PickupPostCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PickupCity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PickupCountry)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DestPostCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DestCity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DestCountry)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

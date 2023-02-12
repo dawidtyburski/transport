@@ -10,6 +10,7 @@ using System.Security.Claims;
 using transport.Models;
 using transport.Services;
 using transport.Countries;
+using Microsoft.AspNetCore.Identity;
 
 namespace transport.Controllers
 {
@@ -17,41 +18,83 @@ namespace transport.Controllers
     [Authorize]
     public class OrderController : Controller
     {
-        private readonly IOrderService _orderService;
+        private readonly transportDbContext _dbContext;
+        private readonly IMapper _mapper;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly UserManager<CustomUser> _userManager;
 
-
-        public OrderController(IOrderService orderService) 
+        public OrderController(transportDbContext dbcontext, IMapper mapper, IAuthorizationService authorizationService,
+                            UserManager<CustomUser> userManager)
         {
-            _orderService = orderService;
+            _dbContext = dbcontext;
+            _mapper = mapper;
+            _authorizationService = authorizationService;
+            _userManager = userManager;
         }
         [AllowAnonymous]
-        [HttpGet("index")]
+        [HttpGet("search")]
         public IActionResult Search() 
         {
-            List<string> countries = Enum.GetNames(typeof(Countries.Countries)).ToList();
-            return View(countries);
+            var model = new SearchOrderModel();
+            return View(model);
         }
         [AllowAnonymous]
-        [HttpPost("index")]
-        public IActionResult Search(string from)
+        [HttpPost("search")]
+        public IActionResult Search([FromForm]SearchOrderModel model)
         {
-            return View();
+            model.countries = null;
+            return RedirectToAction("GetAll", model);
         }
-        [HttpPost]
-        public ActionResult Create([FromBody] CreateOrderDto dto)
+        [Authorize(Roles ="User")]
+        [HttpGet("order/create")]
+        public IActionResult Create()
         {
-            if (!ModelState.IsValid)
+            var model = new CreateOrderModel();
+            return View(model);
+        }
+        [Authorize(Roles = "User")]
+        [HttpPost("order/create")]
+        public async Task<IActionResult> Create([FromForm]CreateOrderModel model)
+        {
+            if (ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var order = _mapper.Map<Order>(model);
+                var pickupAdress = new PickupAdress
+                {
+                    PostCode = model.PickupPostCode,
+                    City = model.PickupCity,
+                    Country = model.PickupCountry,
+                    OrderId = order.Id
+                };
+                _dbContext.PickupAdresses.Add(pickupAdress);
+
+                var destAdress = new DestinationAdress
+                {
+                    PostCode = model.DestPostCode,
+                    City = model.DestCity,
+                    Country = model.DestCountry,
+                    OrderId = order.Id
+                };
+                _dbContext.DestinationAdresses.Add(destAdress);
+
+                order.PickupAdress = pickupAdress;
+                order.DestinationAdress = destAdress;
+                var user = await _userManager.GetUserAsync(User);
+                order.CustomUser = user;
+                _dbContext.Orders.Add(order);
+               
+                _dbContext.SaveChanges();
+
+
+                return Redirect($"{order.Id}");
             }
-            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var id = _orderService.Create(dto, userId);
-            return Created($"/api/order/{id}", null);
+            return View(model);
+            
         }
         [HttpPut("order/{id}")]
         public ActionResult Edit([FromBody] EditOrderDto dto, [FromRoute]int id)
         {
-            if(!ModelState.IsValid)
+            /*if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -60,41 +103,74 @@ namespace transport.Controllers
             if(!isUpdated)
             {
                 return NotFound();
-            }
+            }*/
             return Ok();
         }
         [HttpDelete("order/{id}")]
         public ActionResult Delete([FromRoute]int id)
         {
-            var isDeleted = _orderService.Delete(id, User);
+            /*var isDeleted = _orderService.Delete(id, User);
             
             if(isDeleted)
             {
                 return NoContent();
             }
-
+            */
             return NotFound();
         }
         [AllowAnonymous]
-        [HttpGet("all")]        
-        public ActionResult<IEnumerable<OrderDto>> GetAll(string from, string to)
+        [HttpGet("all/search")]        
+        public ActionResult<IEnumerable<OrderDto>> GetAll(SearchOrderModel model)
         {
+            var orders = _dbContext
+               .Orders
+               .Include(o => o.PickupAdress)
+               .Include(o => o.DestinationAdress)
+               .Include(o => o.CustomUser)
+               .Where(o => o.PickupAdress.Country == model.From && o.DestinationAdress.Country == model.To)
+               .ToList();
 
-            var orders = _orderService.GetAll(from, to);
-            return View(orders);
+            var result = _mapper.Map<List<OrderDto>>(orders);
+
+            return View(result);
         }
-        [HttpGet("order/{id}")]
         [AllowAnonymous]
-        public ActionResult<IEnumerable<OrderDto>> Get([FromRoute] int id)
+        [HttpGet("all")]
+        public ActionResult<IEnumerable<OrderDto>> GetAllWithoutSearch()
         {
-            var order = _orderService.Get(id);
+            var orders = _dbContext
+               .Orders
+               .Include(o => o.PickupAdress)
+               .Include(o => o.DestinationAdress)
+               .Include(o => o.CustomUser)
+               .ToList();
 
-            if(order is null)
+            var result = _mapper.Map<List<OrderDto>>(orders);
+
+            return View(result);
+        }
+        [AllowAnonymous]
+        [HttpGet("order/{id}")]        
+        public ActionResult<OrderDto> GetById([FromRoute]int id)
+        {
+            var order = _dbContext
+                .Orders
+                .Include(o => o.PickupAdress)
+                .Include(o => o.DestinationAdress)
+                .Include(o=>o.CustomUser)
+                .FirstOrDefault(o => o.Id == id);
+
+            if (order is null) return View();
+
+            var result = _mapper.Map<OrderDto>(order);
+
+
+            if (result is null)
             {
-                return NotFound();
+                return View();
             }
 
-            return Ok(order);
+            return View(result);
         }
     }
 }

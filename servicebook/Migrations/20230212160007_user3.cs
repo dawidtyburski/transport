@@ -5,7 +5,7 @@
 namespace transport.Migrations
 {
     /// <inheritdoc />
-    public partial class customuser : Migration
+    public partial class user3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

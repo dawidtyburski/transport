@@ -12,5 +12,7 @@ namespace transport.Models
         public string FullName { get; set; }
 
         public string PhoneNumber { get; set; }
+
+        public ICollection<Order> Orders { get; set; }
     }
 }

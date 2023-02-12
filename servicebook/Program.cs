@@ -56,8 +56,9 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapControllerRoute(
-                      name: "ord", pattern: "orders/index", new { controller = "Order", action = "Search" });
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
 
 app.Run();

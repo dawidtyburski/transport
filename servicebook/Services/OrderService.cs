@@ -5,42 +5,60 @@ using System.Security.Claims;
 using transport.Models;
 using transport.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 namespace transport.Services
 {
     public interface IOrderService
     {
-        int Create(CreateOrderDto dto, int userId);
+        int Create(CreateOrderModel dto, ClaimsPrincipal user);
         bool Delete(int id, ClaimsPrincipal user);
         bool Edit(int id, EditOrderDto dto, ClaimsPrincipal user);
-        OrderDto Get(int id);
+        OrderDto GetById(int id);
         IEnumerable<OrderDto> GetAll(string from, string to);
+        IEnumerable<OrderDto> GetAllWithoutSearch();
     }
     public class OrderService : IOrderService
     {
         private readonly transportDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IAuthorizationService _authorizationService;
+        private readonly UserManager<CustomUser> _userManager;
 
-        public OrderService(transportDbContext dbcontext, IMapper mapper, IAuthorizationService authorizationService)
+        public OrderService(transportDbContext dbcontext, IMapper mapper, IAuthorizationService authorizationService,
+                            UserManager<CustomUser> userManager)
         {
             _dbContext = dbcontext;
             _mapper = mapper;
             _authorizationService = authorizationService;
+            _userManager = userManager;
         }
 
-        public int Create(CreateOrderDto dto, int userId)
+        public int Create(CreateOrderModel model, ClaimsPrincipal user)
         {
 
-            /* var order = _mapper.Map<Order>(dto);
-             order.UserId = userId.ToString();
-             _dbContext.Orders.Add(order);
+            /*var order = _mapper.Map<Order>(model);
+            order.CustomUser = _userManager.GetUserAsync(user);
 
-             var pickupAdress = _mapper.Map<PickupAdress>(dto);
+            _dbContext.Orders.Add(order);
+
+            var pickupAdress = new PickupAdress
+            {
+                PostCode = model.PickupPostCode,
+                City = model.PickupCity,
+                Country = model.PickupCountry,
+                OrderId = order.Id
+            };
              _dbContext.PickupAdresses.Add(pickupAdress);
 
-             var destAdress = _mapper.Map<DestinationAdress>(dto);
-             _dbContext.DestinationAdresses.Add(destAdress);
+            var destAdress = new DestinationAdress
+            {
+                PostCode = model.DestPostCode,
+                City = model.DestCity,
+                Country = model.DestCountry,
+                OrderId = order.Id
+            };
+            _dbContext.DestinationAdresses.Add(destAdress);
 
              _dbContext.SaveChanges();
 
@@ -85,15 +103,26 @@ namespace transport.Services
                 .Orders
                 .Include(o => o.PickupAdress)
                 .Include(o => o.DestinationAdress)
-                .Where(o => (from==null&&
-                            to==null) || (o.PickupAdress.Country == from && o.DestinationAdress.Country == to))
+                .Where(o => o.PickupAdress.Country == from && o.DestinationAdress.Country == to)
                 .ToList();
 
             var result = _mapper.Map<List<OrderDto>>(orders);
 
             return result;
         }
-        public OrderDto Get(int id)
+        public IEnumerable<OrderDto> GetAllWithoutSearch()
+        {
+            var orders = _dbContext
+                .Orders
+                .Include(o => o.PickupAdress)
+                .Include(o => o.DestinationAdress)               
+                .ToList();
+
+            var result = _mapper.Map<List<OrderDto>>(orders);
+
+            return result;
+        }
+        public OrderDto GetById(int id)
         {
             var order = _dbContext
                 .Orders

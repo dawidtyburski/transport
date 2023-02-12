@@ -1,8 +1,24 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="container col-6 p-2 my-2 bg-white text-black text-center">
+    <h5 class="pt-2">Discover one of the most advanced freight exchanges in EU</h5>
+    
+    <div class="pt-2">
+        <button type="button" onclick="window.location= '@Url.Action( "search", "order")'" class="btn-secondary btn-sm">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+    </div>
+    <div>OR</div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div>Create new order</div>
+        <div>
+            <button type="button" onclick="window.location= '@Url.Action( "create", "order")'" class="btn-success btn-sm">Create <i class="fa fa-plus" aria-hidden="true"></i></button>
+        </div>
+    }
+    else
+    {
+        <div>Log in to create order</div>
+        <div>
+            <button type="button" onclick="window.location= '@Url.Action( "login", "account")'" class="btn-success btn-sm">Log in <i class="fa fa-sign-in" aria-hidden="true"></i></button>
+        </div>
+    }
+    
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

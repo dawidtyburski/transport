@@ -12,8 +12,8 @@ using transport;
 namespace transport.Migrations
 {
     [DbContext(typeof(transportDbContext))]
-    [Migration("20230211181701_fields2")]
-    partial class fields2
+    [Migration("20230212160456_user4")]
+    partial class user4
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,6 +181,10 @@ namespace transport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -248,6 +252,9 @@ namespace transport.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PostCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -260,10 +267,11 @@ namespace transport.Migrations
             modelBuilder.Entity("transport.Models.Order", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("CustomUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -289,9 +297,7 @@ namespace transport.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DestinationAdressId");
-
-                    b.HasIndex("PickupAdressId");
+                    b.HasIndex("CustomUserId");
 
                     b.ToTable("Orders");
                 });
@@ -311,6 +317,9 @@ namespace transport.Migrations
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PostCode")
                         .IsRequired()
@@ -374,31 +383,46 @@ namespace transport.Migrations
 
             modelBuilder.Entity("transport.Models.Order", b =>
                 {
-                    b.HasOne("transport.Models.DestinationAdress", "DestinationAdress")
+                    b.HasOne("transport.Models.CustomUser", "CustomUser")
                         .WithMany("Orders")
-                        .HasForeignKey("DestinationAdressId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("CustomUserId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("transport.Models.DestinationAdress", "DestinationAdress")
+                        .WithOne("Order")
+                        .HasForeignKey("transport.Models.Order", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("transport.Models.PickupAdress", "PickupAdress")
-                        .WithMany("Orders")
-                        .HasForeignKey("PickupAdressId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithOne("Order")
+                        .HasForeignKey("transport.Models.Order", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CustomUser");
 
                     b.Navigation("DestinationAdress");
 
                     b.Navigation("PickupAdress");
                 });
 
-            modelBuilder.Entity("transport.Models.DestinationAdress", b =>
+            modelBuilder.Entity("transport.Models.CustomUser", b =>
                 {
                     b.Navigation("Orders");
                 });
 
+            modelBuilder.Entity("transport.Models.DestinationAdress", b =>
+                {
+                    b.Navigation("Order")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("transport.Models.PickupAdress", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("Order")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

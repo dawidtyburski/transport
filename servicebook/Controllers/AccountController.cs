@@ -100,6 +100,30 @@ namespace transport.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
                 return View(loginModel);
         }
+        [Authorize(Roles ="User")]
+        [HttpGet("user/settings")]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+        [Authorize(Roles = "User")]
+        [HttpPost("user/settings")]
+        public async Task<IActionResult> ChangePassword([FromForm]ChangePasswordModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+
+                return View(model);
+            }
+            
+
+            return View();
+        }
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

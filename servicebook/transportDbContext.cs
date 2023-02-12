@@ -19,7 +19,11 @@ namespace transport
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //--Order
+            modelBuilder.Entity<CustomUser>()
+                .HasMany(i => i.Orders)
+                .WithOne(e => e.CustomUser)
+                .OnDelete(DeleteBehavior.ClientCascade);
+            //--Order            
             modelBuilder.Entity<Order>()
                 .Property(o => o.Title)
                 .IsRequired();
@@ -38,9 +42,9 @@ namespace transport
 
             //--PickupAdress
             modelBuilder.Entity<PickupAdress>()
-                .HasMany(i => i.Orders)
+                .HasOne(i => i.Order)
                 .WithOne(e => e.PickupAdress)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey<Order>(b => b.Id);
             modelBuilder.Entity<PickupAdress>()
                 .Property(i => i.City)
                 .IsRequired();
@@ -53,9 +57,9 @@ namespace transport
 
             //--DestinationAdress
             modelBuilder.Entity<DestinationAdress>()
-                .HasMany(d => d.Orders)
+                .HasOne(d => d.Order)
                 .WithOne(e => e.DestinationAdress)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey<Order>(b => b.Id);
             modelBuilder.Entity<DestinationAdress>()
                 .Property(d => d.City)
                 .IsRequired();

@@ -7,6 +7,7 @@
         public string PostCode { get; set; }
         public string Country { get; set; }
 
-        public virtual List<Order> Orders { get; set; }
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
     }
 }

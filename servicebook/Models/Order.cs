@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace transport.Models
@@ -12,12 +14,13 @@ namespace transport.Models
         public float PalletPlace { get; set; }       
         public int Price { get; set; }
 
-
         public int PickupAdressId { get; set; }
         public virtual PickupAdress PickupAdress { get; set; }
 
         public int DestinationAdressId { get; set; }
         public virtual DestinationAdress DestinationAdress { get; set; }
+
+        public virtual CustomUser CustomUser { get; set; }
 
     }
 }

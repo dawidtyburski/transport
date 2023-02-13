@@ -1,89 +1,111 @@
 ﻿@model transport.Models.CreateOrderModel
 
-<div class="container col-4 p-2 my-2 bg-white text-black text-left">
-    <h5 class="p-2">Create Order</h5>
-    <form method="post">
+<div class="container col-12 p-2 my-2 bg-white text-black text-left">
+    
+    <form method="post">      
+        @if (TempData["CreateSuccess"] != null)
+        {
+            <div class="text-success">
+                @TempData["CreateSuccess"]
+            </div>
+            <div>Title: @Model.Title</div>
+            <div>Description: @Model.Description</div>
+            <div>Weight: @Model.Weight kg</div>
+            <div>Pallets: @Model.PalletPlace</div>
+            <div>Price: @Model.Price €</div>
+            <div>From: @Model.PickupPostCode @Model.PickupCity @Model.PickupCountry</div>
+            <div>To: @Model.DestPostCode @Model.DestCity @Model.DestCountry</div>
+        }
+        else
+        {
+            <h5 class="p-2">Create Order</h5>
             <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="card text-left">
-            <div class="card-body">
-                <h5 class="mb-2">Details</h5>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-dark" asp-for="Title"></label></h6>
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-dark" asp-for="Description"></label></h6>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-dark" asp-for="Weight"></label></h6>
-                    <input asp-for="Weight" class="form-control" />
-                    <span asp-validation-for="Weight" class="text-danger"></span>
+            <div class="row">
+                <div class="col-sm-3">
+            <div class="card text-left">
+                <div class="card-body">
+                    <h5 class="mb-2">Details</h5>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-dark" asp-for="Title"></label></h6>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-dark" asp-for="Description"></label></h6>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-dark" asp-for="Weight"></label></h6>
+                        <input asp-for="Weight" class="form-control" />
+                        <span asp-validation-for="Weight" class="text-danger"></span>
 
-                </div>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-dark" asp-for="PalletPlace"></label></h6>
-                    <input asp-for="PalletPlace" class="form-control" />
-                    <span asp-validation-for="PalletPlace" class="text-danger"></span>
-                </div>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-dark" asp-for="Price"></label></h6>
-                    <input asp-for="Price" class="form-control" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-dark" asp-for="PalletPlace"></label></h6>
+                        <input asp-for="PalletPlace" class="form-control" />
+                        <span asp-validation-for="PalletPlace" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-dark" asp-for="Price"></label></h6>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
 
+                    </div>
                 </div>
             </div>
-         </div>          
-        <div class="card text-left mt-2">
-            <div class="card-body">
-                <h5 class="mb-2">Pickup Address</h5>
-                <div class="form-group input-group-sm pt-2">
+                </div>
+                <div class="col-sm-3">
+            <div class="card text-left">
+                <div class="card-body">
+                    <h5 class="mb-2">Pickup Address</h5>
+                    <div class="form-group input-group-sm pt-2">
 
-                    <h6><label class="badge bg-success" asp-for="PickupPostCode"></label></h6>
-            <input asp-for="PickupPostCode" class="form-control" />
-            <span asp-validation-for="PickupPostCode" class="text-danger"></span>
-        </div>
-        <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-success" asp-for="PickupCity"></label></h6>
-            <input asp-for="PickupCity" class="form-control" />
-            <span asp-validation-for="PickupCity" class="text-danger"></span>
-        </div>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-success" asp-for="PickupCountry"></label></h6>
-            <select class="form-control" asp-for="PickupCountry"
-                    asp-items="@(new SelectList(Model.countries))">
-            </select>
-        </div>
-            </div>
-        </div>
-        <div class="card text-left mt-2">
-            <div class="card-body">
-                <h5 class="mb-2">Destination Address</h5>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-warning" asp-for="DestPostCode"></label></h6>
-                    <input asp-for="DestPostCode" class="form-control" />
-                    <span asp-validation-for="DestPostCode" class="text-danger"></span>
-                </div>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-warning" asp-for="DestCity"></label></h6>
-                    <input asp-for="DestCity" class="form-control" />
-                    <span asp-validation-for="DestCity" class="text-danger"></span>
-                </div>
-                <div class="form-group input-group-sm pt-2">
-                    <h6><label class="badge bg-warning" asp-for="DestCountry"></label></h6>
-                    <select class="form-control" asp-for="DestCountry"
+                        <h6><label class="badge bg-success" asp-for="PickupPostCode"></label></h6>
+                        <input asp-for="PickupPostCode" class="form-control" />
+                        <span asp-validation-for="PickupPostCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-success" asp-for="PickupCity"></label></h6>
+                        <input asp-for="PickupCity" class="form-control" />
+                        <span asp-validation-for="PickupCity" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-success" asp-for="PickupCountry"></label></h6>
+                        <select class="form-control" asp-for="PickupCountry"
                             asp-items="@(new SelectList(Model.countries))">
-                    </select>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="mt-2">
-            <button type="submit" class="btn-success btn-sm">Create</button>
-        </div>
-        
+            </div>
+                <div class="col-sm-3">
+            <div class="card text-left">
+                <div class="card-body">
+                    <h5 class="mb-2">Destination Address</h5>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-warning" asp-for="DestPostCode"></label></h6>
+                        <input asp-for="DestPostCode" class="form-control" />
+                        <span asp-validation-for="DestPostCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-warning" asp-for="DestCity"></label></h6>
+                        <input asp-for="DestCity" class="form-control" />
+                        <span asp-validation-for="DestCity" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group-sm pt-2">
+                        <h6><label class="badge bg-warning" asp-for="DestCountry"></label></h6>
+                        <select class="form-control" asp-for="DestCountry"
+                            asp-items="@(new SelectList(Model.countries))">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
+            <div class="mt-2">
+                <button type="submit" class="btn-success btn-sm">Create</button>
+            </div>
+        }                     
     </form>
-
-
 </div>

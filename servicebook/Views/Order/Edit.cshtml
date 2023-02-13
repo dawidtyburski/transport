@@ -1,5 +1,33 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model transport.Models.EditOrderModel
+
+<div class="container col-3 p-2 my-2 bg-white text-black text-left">
+    <h5 class="p-2">Edit Order</h5>
+
+    <form method="post">
+        @if (TempData["EditSuccess"] != null)
+        {
+            <div class="text-success">
+                @TempData["EditSuccess"]
+            </div>
+            <div class="text-success">
+                <button type="button" onclick="location.href='@Url.Action("getuserorders", "Order", new { guid = Guid.NewGuid() })'" class="btn-success btn-sm" style="font-size: 0.8rem;">Click here</button> 
+                to go back to your orders
+            </div>
+        }
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group input-group-sm mt-2">
+            <h6><label class="badge bg-dark" asp-for="Price"></label></h6>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="mt-2">
+            <button type="submit" class="btn-success btn-sm">Submit</button>
+        </div>
+
+
+
+
+    </form>
+
+
+</div>

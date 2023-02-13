@@ -13,7 +13,7 @@ namespace transport.Services
     {
         int Create(CreateOrderModel dto, ClaimsPrincipal user);
         bool Delete(int id, ClaimsPrincipal user);
-        bool Edit(int id, EditOrderDto dto, ClaimsPrincipal user);
+        bool Edit(int id, EditOrderModel dto, ClaimsPrincipal user);
         OrderDto GetById(int id);
         IEnumerable<OrderDto> GetAll(string from, string to);
         IEnumerable<OrderDto> GetAllWithoutSearch();
@@ -65,7 +65,7 @@ namespace transport.Services
              return order.Id;*/
             return 1;
         }
-        public bool Edit(int id, EditOrderDto dto, ClaimsPrincipal user)
+        public bool Edit(int id, EditOrderModel dto, ClaimsPrincipal user)
         {
             var order = _dbContext
                 .Orders

@@ -12,13 +12,15 @@ namespace transport.Models
         public string Description { get; set; }
         [Required]
         [Range(1, 30000)]
+        [Display(Name ="Weight(kg)")]
         public float Weight { get; set; }
         [Required]
-        [Range(0, 33)]
+        [Range(0.5, 33)]
         [Display(Name = "Pallets")]
         public float PalletPlace { get; set; }
         [Required]
-        [Range(0, 9999)]
+        [Range(1, 9999)]
+        [Display(Name = "Price(€)")]
         public int Price { get; set; }
         [Required]
         [MaxLength(20)]

@@ -11,6 +11,7 @@ using transport.Models;
 using transport.Services;
 using transport.Countries;
 using Microsoft.AspNetCore.Identity;
+using transport.Authorization;
 
 namespace transport.Controllers
 {
@@ -83,40 +84,47 @@ namespace transport.Controllers
                 order.CustomUser = user;
                 _dbContext.Orders.Add(order);
                
-                _dbContext.SaveChanges();
-
-
-                return Redirect($"{order.Id}");
+                _dbContext.SaveChanges(); 
+                TempData["CreateSuccess"] = "Order created successfully";              
             }
             return View(model);
             
         }
-        [HttpPut("order/{id}")]
-        public ActionResult Edit([FromBody] EditOrderDto dto, [FromRoute]int id)
+        [Authorize(Roles = "User")]
+        [HttpGet("order/edit/{id}")]
+        public ActionResult Edit(int id)
         {
-            /*if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var isUpdated = _orderService.Edit(id, dto, User);
-            if(!isUpdated)
-            {
-                return NotFound();
-            }*/
-            return Ok();
+            return View();
         }
-        [HttpDelete("order/{id}")]
-        public ActionResult Delete([FromRoute]int id)
+        [Authorize(Roles ="User")]
+        [HttpPost("order/edit/{id}")]
+        public ActionResult Edit([FromForm]EditOrderModel model, [FromRoute]int id)
         {
-            /*var isDeleted = _orderService.Delete(id, User);
-            
-            if(isDeleted)
+            if(ModelState.IsValid)
             {
-                return NoContent();
+                var order = _dbContext
+                .Orders
+                .FirstOrDefault(o => o.Id == id);
+
+                order.Price = model.Price;
+
+                _dbContext.SaveChanges();
+
+                TempData["EditSuccess"] = "Price updated successfuly";
             }
-            */
-            return NotFound();
+            return View();
+        }
+        [Authorize(Roles ="User")]
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            var order = _dbContext
+                .Orders
+                .FirstOrDefault(o => o.Id == id);
+
+            _dbContext.Orders.Remove(order);
+            _dbContext.SaveChanges();
+            return RedirectToAction("getuserorders", new { guid = Guid.NewGuid() });
         }
         [AllowAnonymous]
         [HttpGet("all/search")]        
@@ -149,28 +157,24 @@ namespace transport.Controllers
 
             return View(result);
         }
-        [AllowAnonymous]
-        [HttpGet("order/{id}")]        
-        public ActionResult<OrderDto> GetById([FromRoute]int id)
+        [Authorize(Roles = "User")]
+        [HttpGet]
+        public ActionResult<IEnumerable<OrderDto>> GetUserOrders(Guid guid)
         {
-            var order = _dbContext
-                .Orders
-                .Include(o => o.PickupAdress)
-                .Include(o => o.DestinationAdress)
-                .Include(o=>o.CustomUser)
-                .FirstOrDefault(o => o.Id == id);
-
-            if (order is null) return View();
-
-            var result = _mapper.Map<OrderDto>(order);
-
-
-            if (result is null)
+            if(guid== Guid.Empty)
             {
-                return View();
+                return RedirectToAction("GetAllWithoutSearch", "Order");
             }
+                var orders = _dbContext
+               .Orders
+               .Include(o => o.PickupAdress)
+               .Include(o => o.DestinationAdress)
+               .Include(o => o.CustomUser)
+               .Where(o => o.CustomUser.UserName == User.Identity.Name)
+               .ToList();
 
-            return View(result);
+                var result = _mapper.Map<List<OrderDto>>(orders);
+                return View(result);
         }
     }
 }

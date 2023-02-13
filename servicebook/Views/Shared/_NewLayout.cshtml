@@ -35,7 +35,7 @@
                                 
                             </li>
                              <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="order" asp-action="create"><i class="fa fa-list" aria-hidden="true"></i> My Orders</a>
+                            <a class="nav-link" asp-area="" asp-controller="order" asp-action="getuserorders" asp-route-guid="@Guid.NewGuid()"><i class="fa fa-list" aria-hidden="true"></i> My Orders</a>
                                 
                             </li>
                         </ul>
@@ -56,7 +56,7 @@
                     {
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ChangePassword">><i class="fa fa-user" aria-hidden="true"></i> @(((ClaimsIdentity)User.Identity).FindFirst("FullName").Value)</a>
+                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ChangePassword"><i class="fa fa-user" aria-hidden="true"></i> @(((ClaimsIdentity)User.Identity).FindFirst("FullName").Value)</a>
                         </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>                                
@@ -67,7 +67,7 @@
                     {
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="account" asp-action="login"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+                                <a class="nav-link" asp-area="" asp-controller="account" asp-action="login"><i class="fa fa-sign-in" aria-hidden="true"></i> Log in</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="account" asp-action="register"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a>

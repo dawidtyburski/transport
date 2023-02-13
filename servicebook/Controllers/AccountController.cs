@@ -51,11 +51,6 @@ namespace transport.Controllers
 
                 if (result.Succeeded)
                 {
-                    if (await _roleManager.RoleExistsAsync("Administrator") == false)
-                    {
-                        IdentityRole newRole = new IdentityRole("Administrator");
-                        await _roleManager.CreateAsync(newRole);
-                    }
                     if (await _roleManager.RoleExistsAsync("User") == false)
                     {
                         IdentityRole newRole = new IdentityRole("User");
@@ -67,7 +62,7 @@ namespace transport.Controllers
                     {
                         IdentityResult roleresult = await _userManager.AddToRoleAsync(user, role.Name);
                     }
-                    return RedirectToAction("Login", "Account");
+                    TempData["RegisterSuccess"] = "Account created successfully";
                 }
 
                 foreach (var error in result.Errors)
@@ -113,16 +108,21 @@ namespace transport.Controllers
             if(ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
                 var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
-
-                return View(model);
+                if(result.Succeeded) 
+                {
+                    TempData["PasswordChangeSuccess"] = "Password Changed";
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
             }
             
+            return View(model);
 
-            return View();
+
         }
         public async Task<IActionResult> Logout()
         {

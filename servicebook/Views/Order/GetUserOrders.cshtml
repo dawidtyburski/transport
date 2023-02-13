@@ -44,19 +44,7 @@
                         @Html.DisplayFor(modelItem => item.Description)
                     </div>
 
-                </td>
-                <td colspan="1" class="text-center">
-                    <span class="badge bg-dark">Contact</span>
-                    <div>
-                        @Html.DisplayFor(modelItem => item.FullName)
-                    </div>
-                    <div>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </div>
-                    <div>
-                        @Html.DisplayFor(modelItem => item.PhoneNumber)
-                    </div>
-                </td>
+                </td>                
                 <td colspan="2" class="text-center">
                     <span class="badge bg-dark">Pickup Address</span>
                     <div>
@@ -77,6 +65,19 @@
                         @Html.DisplayFor(modelItem => item.DestCountry)
                     </div>
                 </td>
+                    <td colspan="1" class="text-center">
+                    <span class="badge bg-dark">Actions</span>
+                    <div class="mt-1">                       
+                            <button type="button" onclick="location.href='@Url.Action("Edit", "Order", new { id = @item.Id })'" class="btn-success btn-sm" style="font-size: 0.8rem;">Edit <i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>                                             
+                        </div>
+                        <div class="mt-1">
+                        <form asp-controller="Order" asp-action="Delete" asp-route-id="@item.Id" method="post">
+                            <button asp-route-id="@item.Id" type="submit" class="btn-danger btn-sm" style="font-size: 0.8rem;">Delete <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                        </form>
+                        
+                        </div>
+                    
+                    </td>
             </tr>
             i++;
         }

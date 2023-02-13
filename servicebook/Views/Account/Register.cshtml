@@ -7,6 +7,15 @@
 <div class="container col-3 p-2 my-2 bg-white text-black text-left">
     <h5 class="p-2">Register</h5>
         <form method="post">
+        @if (TempData["RegisterSuccess"] != null)
+        {
+            <div class="text-success">
+                @TempData["RegisterSuccess"]               
+            </div>
+            <div class="text-success">
+                You can log in <button type="button" onclick="window.location= '@Url.Action( "login", "account")'" class="btn-success btn-sm"><i class="fa fa-sign-in" aria-hidden="true"></i> Log in</button>
+            </div>
+        }
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group input-group-sm ">
             <h6><label class="badge bg-dark" asp-for="Email"></label></h6>

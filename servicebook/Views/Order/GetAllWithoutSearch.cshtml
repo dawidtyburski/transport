@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<transport.Models.OrderDto>
 
 <table class="table table-responsive table-hover m-3">
-    <thead class="bg-secondary text-dark text-center">
+    <thead class="bg-white text-dark text-center border">
         <tr>
-            <th><span class="badge bg-light text-dark">@Html.DisplayNameFor(model => model.Title)</span></th>
-            <th><span class="badge bg-light text-dark">@Html.DisplayNameFor(model => model.Weight)</span></th>
-            <th><span class="badge bg-light text-dark">@Html.DisplayNameFor(model => model.PalletPlace)</span></th>
-            <th><span class="badge bg-light text-dark">@Html.DisplayNameFor(model => model.PickupCountry)</span></th>
-            <th><span class="badge bg-light text-dark">@Html.DisplayNameFor(model => model.DestCountry)</span></th>
-            <th><span class="badge bg-light text-dark">@Html.DisplayNameFor(model => model.Price)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Title)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Weight)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.PalletPlace)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.PickupCountry)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.DestCountry)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Price)</span></th>
         </tr>
     </thead>
     <tbody>
@@ -17,7 +17,7 @@
         }
         @foreach (var item in Model)
         {
-            <tr class="clickable text-center" style="font-size: 0.9rem;" data-toggle="collapse" data-target="#collapseOne_@i" href="#collapseOne_@i">
+            <tr class="clickable text-center bg-light border" style="font-size: 0.9rem;" data-toggle="collapse" data-target="#collapseOne_@i" href="#collapseOne_@i">
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
@@ -37,7 +37,7 @@
                     @Html.DisplayFor(modelItem => item.Price) <i class="fa fa-eur" aria-hidden="true"></i>
                 </td>
             </tr>
-            <tr id="collapseOne_@i" class="panel-collapse collapse in" style=" font-size: 0.8rem;">
+            <tr id="collapseOne_@i" class="panel-collapse collapse in border" style=" font-size: 0.8rem;">
                 <td colspan="1"class="text-center">
                     <span class="badge bg-dark">Description</span>
                     <div>

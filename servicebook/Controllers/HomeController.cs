@@ -2,18 +2,16 @@
 using servicebook.Models;
 using System.Diagnostics;
 using transport;
-using transport.Models;
 
-namespace servicebook.Controllers
+namespace transport.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly transportDbContext _dbContext;
-        public HomeController(ILogger<HomeController> logger, transportDbContext dbContext)
+
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _dbContext = dbContext;
         }
 
         public IActionResult Index()

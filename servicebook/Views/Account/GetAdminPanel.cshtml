@@ -1,0 +1,70 @@
+﻿@model IEnumerable<transport.Models.AdminPanelModel>
+
+<table class="table table-responsive m-3">
+    <thead class="bg-white text-dark text-center border">
+        <tr>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Id)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Roles)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Email)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.FullName)</span></th>
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.PhoneNumber)</span></th>           
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Counter)</span></th>
+            <th><span class="badge bg-dark">Action</span></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 0;
+        }
+        @foreach (var item in Model)
+        {
+                <tr class="clickable text-center bg-light border" style="font-size: 0.9rem;">
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @{int j =0;
+                        foreach(var role in item.Roles)
+                        {
+                            <div>@role</div>
+                        }j++;
+                        }
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Counter)
+                    </td>
+                    <td>
+                        @if(!item.isBlocked)
+                    {
+                        <form asp-controller="Account" asp-action="BlockUser" asp-route-id="@item.Id" method="post">
+                            <button asp-route-id="@item.Id" type="submit" class="btn-danger btn-sm" style="font-size: 0.8rem;">Block</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Account" asp-action="BlockUser" asp-route-id="@item.Id" method="post">
+                            <button asp-route-id="@item.Id" type="submit" class="btn-secondary btn-sm" style="font-size: 0.8rem;">Unblock</button>
+                        </form>
+                    }
+                    </td>                   
+                </tr>
+               
+            i++;
+        }
+        @if (!Model.Any())
+        {
+                <tr>
+                    <td colspan="7" class="text-center text-danger border">No content</td>
+                </tr>
+        }
+    </tbody>
+</table>

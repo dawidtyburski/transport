@@ -80,7 +80,12 @@
             </tr>
             i++;
         }
-       
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="6" class="text-center text-danger border">No content</td>
+            </tr>
+        }
     </tbody>
 </table>
 <style>

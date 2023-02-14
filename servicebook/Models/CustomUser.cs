@@ -13,6 +13,10 @@ namespace transport.Models
 
         public string PhoneNumber { get; set; }
 
+        public int Counter { get; set; }
+
+        public bool isBlocked { get; set; }
+
         public ICollection<Order> Orders { get; set; }
     }
 }

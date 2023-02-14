@@ -1,19 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Identity;
 using transport;
-using transport.Services;
-using transport.Authorization;
 using transport.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Security.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,10 +18,6 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
-//builder.Services.AddSwaggerGen();
-
 
 var app = builder.Build();
 

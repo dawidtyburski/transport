@@ -1,0 +1,55 @@
+﻿@model IEnumerable<transport.Models.UsersRankingModel>
+
+<div class="row justify-content-center">
+    <div class="col-5">
+<table class="table table-responsive m-3">
+    <tbody>
+        @{
+            int i = 0;
+        }
+        @foreach (var item in Model)
+        {
+            <tr class="bg-light border" style="font-size: 0.9rem;">
+                <td class="col-sm-1">
+                   @if(i.Equals(0))
+                            {
+                                <div style="color: orange"><i class="fa fa-trophy" aria-hidden="true"></i></div>
+                            }
+                            else if(i.Equals(1))
+                            {
+                                 <div style="color: silver"><i class="fa fa-trophy" aria-hidden="true"></i></div>
+                            }
+                            else if (i.Equals(2))
+                            {
+                                <div style="color: saddlebrown"><i class="fa fa-trophy" aria-hidden="true"></i></div>
+                            }
+                            else
+                            {
+                                @(i + 1)
+                            }                           
+                </td>
+                <td class="text-center col-sm-3">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td class="text-center col-sm-3">
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td class="text-center col-sm-3">
+                    <div class="text-secondary">Created Orders:</div>
+                </td>
+                <td class="text-center col-sm-1">
+                    @Html.DisplayFor(modelItem => item.Counter)
+                </td>
+            </tr>                            
+            i++;
+        }
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="4" class="text-center text-danger border">No content</td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+</div>

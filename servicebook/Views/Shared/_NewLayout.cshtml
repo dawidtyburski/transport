@@ -19,10 +19,6 @@
                 <img src="https://i.ibb.co/yp6PcsW/logocargo.png" class="rounded-circle" height="55"
                      alt="" loading="lazy"/>
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>           
-
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     @if (User.Identity.IsAuthenticated)
                     {
@@ -38,6 +34,9 @@
                             <a class="nav-link" asp-area="" asp-controller="order" asp-action="getuserorders" asp-route-guid="@Guid.NewGuid()"><i class="fa fa-list" aria-hidden="true"></i> My Orders</a>
                                 
                             </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="account" asp-action="getusersranking"><i class="fa fa-trophy" aria-hidden="true"></i> Ranking</a>
+                        </li>
                         </ul>
 
                     }
@@ -56,7 +55,7 @@
                     {
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ChangePassword"><i class="fa fa-user" aria-hidden="true"></i> @(((ClaimsIdentity)User.Identity).FindFirst("FullName").Value)</a>
+                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ChangePassword"><i class="fa fa-user" aria-hidden="true"></i> @(((ClaimsIdentity)User.Identity).FindFirst("FullName").Value)(@User.Identity.Name)</a>
                         </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>                                
@@ -88,7 +87,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - servicebook - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - CargoEU - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -1,17 +1,9 @@
 ﻿using AutoMapper;
-using Azure.Core;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Http.Headers;
-using System.Security.Claims;
 using transport.Models;
-using transport.Services;
-using transport.Countries;
 using Microsoft.AspNetCore.Identity;
-using transport.Authorization;
 
 namespace transport.Controllers
 {
@@ -21,17 +13,15 @@ namespace transport.Controllers
     {
         private readonly transportDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly IAuthorizationService _authorizationService;
         private readonly UserManager<CustomUser> _userManager;
 
-        public OrderController(transportDbContext dbcontext, IMapper mapper, IAuthorizationService authorizationService,
-                            UserManager<CustomUser> userManager)
+        public OrderController(transportDbContext dbcontext, IMapper mapper, UserManager<CustomUser> userManager)
         {
             _dbContext = dbcontext;
             _mapper = mapper;
-            _authorizationService = authorizationService;
             _userManager = userManager;
         }
+        
         [AllowAnonymous]
         [HttpGet("search")]
         public IActionResult Search() 
@@ -39,6 +29,7 @@ namespace transport.Controllers
             var model = new SearchOrderModel();
             return View(model);
         }
+        
         [AllowAnonymous]
         [HttpPost("search")]
         public IActionResult Search([FromForm]SearchOrderModel model)
@@ -46,6 +37,7 @@ namespace transport.Controllers
             model.countries = null;
             return RedirectToAction("GetAll", model);
         }
+        
         [Authorize(Roles ="User")]
         [HttpGet("order/create")]
         public IActionResult Create()
@@ -53,6 +45,7 @@ namespace transport.Controllers
             var model = new CreateOrderModel();
             return View(model);
         }
+        
         [Authorize(Roles = "User")]
         [HttpPost("order/create")]
         public async Task<IActionResult> Create([FromForm]CreateOrderModel model)
@@ -60,6 +53,7 @@ namespace transport.Controllers
             if (ModelState.IsValid)
             {
                 var order = _mapper.Map<Order>(model);
+
                 var pickupAdress = new PickupAdress
                 {
                     PostCode = model.PickupPostCode,
@@ -82,20 +76,23 @@ namespace transport.Controllers
                 order.DestinationAdress = destAdress;
                 var user = await _userManager.GetUserAsync(User);
                 order.CustomUser = user;
+                
                 _dbContext.Orders.Add(order);
-               
+                user.Counter++;
                 _dbContext.SaveChanges(); 
                 TempData["CreateSuccess"] = "Order created successfully";              
             }
             return View(model);
             
         }
+        
         [Authorize(Roles = "User")]
         [HttpGet("order/edit/{id}")]
         public ActionResult Edit(int id)
         {
             return View();
         }
+        
         [Authorize(Roles ="User")]
         [HttpPost("order/edit/{id}")]
         public ActionResult Edit([FromForm]EditOrderModel model, [FromRoute]int id)
@@ -114,6 +111,7 @@ namespace transport.Controllers
             }
             return View();
         }
+        
         [Authorize(Roles ="User")]
         [HttpPost]
         public ActionResult Delete(int id)
@@ -126,6 +124,7 @@ namespace transport.Controllers
             _dbContext.SaveChanges();
             return RedirectToAction("getuserorders", new { guid = Guid.NewGuid() });
         }
+        
         [AllowAnonymous]
         [HttpGet("all/search")]        
         public ActionResult<IEnumerable<OrderDto>> GetAll(SearchOrderModel model)
@@ -142,6 +141,7 @@ namespace transport.Controllers
 
             return View(result);
         }
+        
         [AllowAnonymous]
         [HttpGet("all")]
         public ActionResult<IEnumerable<OrderDto>> GetAllWithoutSearch()
@@ -157,6 +157,7 @@ namespace transport.Controllers
 
             return View(result);
         }
+       
         [Authorize(Roles = "User")]
         [HttpGet]
         public ActionResult<IEnumerable<OrderDto>> GetUserOrders(Guid guid)
@@ -165,7 +166,7 @@ namespace transport.Controllers
             {
                 return RedirectToAction("GetAllWithoutSearch", "Order");
             }
-                var orders = _dbContext
+            var orders = _dbContext
                .Orders
                .Include(o => o.PickupAdress)
                .Include(o => o.DestinationAdress)
@@ -173,8 +174,8 @@ namespace transport.Controllers
                .Where(o => o.CustomUser.UserName == User.Identity.Name)
                .ToList();
 
-                var result = _mapper.Map<List<OrderDto>>(orders);
-                return View(result);
+            var result = _mapper.Map<List<OrderDto>>(orders);
+            return View(result);
         }
     }
 }

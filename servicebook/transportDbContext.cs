@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using transport.Models;
@@ -11,7 +10,6 @@ namespace transport
         public DbSet<Order> Orders { get; set; }
         public DbSet<PickupAdress> PickupAdresses { get; set; }
         public DbSet<DestinationAdress> DestinationAdresses { get; set; }
-
 
         private string _connectionString = 
             "Server=(localdb)\\mssqllocaldb;Database=TransportDb;Trusted_Connection=True;";

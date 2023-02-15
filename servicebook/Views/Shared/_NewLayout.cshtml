@@ -37,7 +37,13 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="account" asp-action="getusersranking"><i class="fa fa-trophy" aria-hidden="true"></i> Ranking</a>
                         </li>
-                        </ul>
+                    </ul>
+                    if(User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="account" asp-action="getadminpanel">Panel</a>
+                        </li>
+                    }
 
                     }
                 

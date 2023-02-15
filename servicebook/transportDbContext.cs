@@ -67,6 +67,8 @@ namespace transport
             modelBuilder.Entity<DestinationAdress>()
                .Property(d => d.Country)
                .IsRequired();
+
+
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

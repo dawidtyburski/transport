@@ -2,6 +2,7 @@
 using transport;
 using transport.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 
 var app = builder.Build();
 
@@ -39,9 +42,12 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
     );
-
+DataSeeder.Initialize(app);
 app.Run();
+
+

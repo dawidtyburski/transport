@@ -8,6 +8,9 @@
         public string PhoneNumber { get; set; }
         public int Counter { get; set; }
         public bool isBlocked { get; set; }
-        public ICollection<string> Roles { get; set; }
+        public ICollection<string> Roles { get; set; } 
+        public string SelectedId { get; set; }
+        public string SelectedRole { get; set; }
     }
+
 }

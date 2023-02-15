@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using transport.Models;
 
@@ -55,11 +58,6 @@ namespace transport.Controllers
 
                 if (result.Succeeded)
                 {
-                    if (await _roleManager.RoleExistsAsync("User") == false)
-                    {
-                        IdentityRole newRole = new IdentityRole("User");
-                        await _roleManager.CreateAsync(newRole);
-                    }
                     var role = _roleManager.FindByNameAsync("User").Result;
 
                     if (role != null)
@@ -108,15 +106,15 @@ namespace transport.Controllers
             }           
             return View(loginModel);
         }
-        
-        [Authorize(Roles ="User")]
+
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpGet("user/settings")]
         public IActionResult ChangePassword()
         {
             return View();
         }
-        
-        [Authorize(Roles = "User")]
+
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpPost("user/settings")]
         public async Task<IActionResult> ChangePassword([FromForm]ChangePasswordModel model)
         {
@@ -137,7 +135,7 @@ namespace transport.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpGet("users/ranking")]
         public ActionResult<IEnumerable<UsersRankingModel>> GetUsersRanking()
         {
@@ -167,19 +165,20 @@ namespace transport.Controllers
             return RedirectToAction("Login");
         }
 
-        [Authorize(Roles ="Administrator")]
+        [Authorize(Roles ="Admin, SuperAdmin")]
         [HttpGet("admin/panel")]
         public async Task<ActionResult<IEnumerable<AdminPanelModel>>> GetAdminPanel()
         {
             var adminusers = _dbContext
                     .Users
-                    .OrderByDescending(r => r.Email)
+                    .OrderByDescending(r => r.FullName)
                     .ToList();
 
             var result = new List<AdminPanelModel>();
             for (int i = 0; i < adminusers.Count; i++)
             {
                 var roles = await _userManager.GetRolesAsync(adminusers[i]);
+
                 AdminPanelModel user = new AdminPanelModel()
                 {
                     Id = adminusers[i].Id,
@@ -188,14 +187,15 @@ namespace transport.Controllers
                     PhoneNumber = adminusers[i].PhoneNumber,
                     Counter = adminusers[i].Counter,
                     isBlocked = adminusers[i].isBlocked,
-                    Roles = roles                                   
+                    Roles = roles                   
                 };
+                
                 result.Add(user);
             }
             return View(result);
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpPost("admin/panel")]
         public IActionResult BlockUser(string id)
         {
@@ -209,6 +209,33 @@ namespace transport.Controllers
             else user.isBlocked = false;
 
             _dbContext.SaveChanges();
+            return RedirectToAction("GetAdminPanel");
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpPost("admin/panel/[action]")]
+        public IActionResult ChangeRole([FromForm]AdminPanelModel model)
+        {
+
+
+            var user = _dbContext
+                .Users
+                .FirstOrDefault(u => u.Id == model.SelectedId);
+            
+
+            List<string> roles = new List<string>()
+            {
+                "User",
+                "Admin",
+                "SuperAdmin"
+            };
+            _userManager.RemoveFromRolesAsync(user, roles);
+
+
+                _userManager.AddToRoleAsync(user, model.SelectedRole);
+                _dbContext.SaveChanges();
+
+
             return RedirectToAction("GetAdminPanel");
         }
     }

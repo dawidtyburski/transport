@@ -23,12 +23,78 @@
                     @Html.DisplayFor(modelItem => item.Id)
                     </td>
                     <td>
-                        @{int j =0;
-                        foreach(var role in item.Roles)
+                    @{
+                        bool UserCheck = false;
+                        bool AdminCheck = false;
+                        bool SuperAdminCheck = false;
+                    }
+                        @{if (User.IsInRole("Admin"))
                         {
-                            <div>@role</div>
-                        }j++;
+                            int m =0;
+                            foreach (var rolex in item.Roles)
+                            {
+                                <div>@rolex</div>
+                            }  
+                            m++;
                         }
+                    
+                        else if(User.IsInRole("SuperAdmin"))
+                        {
+                            List<string> tempRoles = new List<string>()
+                            {
+                                "User",
+                                "Admin",
+                                "SuperAdmin"
+                            };
+                            
+
+                            int j =0;
+
+                                for(int k=0; k<tempRoles.Count; k++)
+                                {
+                                    foreach(var role in item.Roles)
+                                    {
+                                        if(role==tempRoles[k] && role=="User")
+                                        {
+                                            UserCheck = true;
+                                        }
+                                        else if(role==tempRoles[k] && role=="Admin")
+                                        {
+                                            AdminCheck = true;
+                                        }
+                                        else if (role == tempRoles[k] && role == "SuperAdmin")
+                                        {
+                                            SuperAdminCheck = true;
+                                        }
+                                    }   
+                                    j++;
+                                                       
+                                }
+                            
+                        <form method="post" asp-action="ChangeRole" asp-for="SelectedId" value="@item.Id">
+                                <input class="form-check-input" type="radio" name="@item.Id"  asp-for="@item.SelectedRole" value="User" checked="@UserCheck">
+                            <label >
+                                User
+                            </label>
+
+                                <input class="form-check-input"type="radio" name="@item.Id" asp-for="@item.SelectedRole" value="Admin" checked="@AdminCheck">
+                            <label >
+                                Admin
+                            </label>
+
+                                <input class="form-check-input" type="radio" name="@item.Id" asp-for="@item.SelectedRole" value="SuperAdmin" checked="@SuperAdminCheck">
+                            <label >
+                                SuperAdmin
+                            </label>
+
+                                <button type="submit" class="btn-success btn-sm" style="font-size: 0.8rem;">Save</button>
+                        </form>
+                        
+                        
+ 
+                        }
+
+                    }    
                     </td>
                     <td>
                     @Html.DisplayFor(modelItem => item.Email)

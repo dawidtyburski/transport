@@ -37,16 +37,16 @@ namespace transport.Controllers
             model.countries = null;
             return RedirectToAction("GetAll", model);
         }
-        
-        [Authorize(Roles ="User")]
+
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpGet("order/create")]
         public IActionResult Create()
         {
             var model = new CreateOrderModel();
             return View(model);
         }
-        
-        [Authorize(Roles = "User")]
+
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpPost("order/create")]
         public async Task<IActionResult> Create([FromForm]CreateOrderModel model)
         {
@@ -85,15 +85,15 @@ namespace transport.Controllers
             return View(model);
             
         }
-        
-        [Authorize(Roles = "User")]
+
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpGet("order/edit/{id}")]
         public ActionResult Edit(int id)
         {
             return View();
         }
-        
-        [Authorize(Roles ="User")]
+
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpPost("order/edit/{id}")]
         public ActionResult Edit([FromForm]EditOrderModel model, [FromRoute]int id)
         {
@@ -157,8 +157,8 @@ namespace transport.Controllers
 
             return View(result);
         }
-       
-        [Authorize(Roles = "User")]
+
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpGet]
         public ActionResult<IEnumerable<OrderDto>> GetUserOrders(Guid guid)
         {

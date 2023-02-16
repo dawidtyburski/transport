@@ -1,4 +1,4 @@
-### Giełda Transportowa
+## Giełda Transportowa
 
 ---
 
@@ -64,6 +64,8 @@ Użytkownik zalogowany ma dostęp do tworzenia zleceń, wyświetlania listy swoi
 ![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/b6b54eaad90b019fc58c1d2aad6f48861c33427aa49c4f4e.png)
 
 ![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/dedf121658e23fa3e885f791403ebe6346aea94083fd9ea4.png)
+
+![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/70b0e6b9cc6ea8e337843b5144624db26d21fa1c2ef71ad9.png)
 
 ![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/179df0fa0c4386774b30c5965f3129f36d7cd717ee091fc0.png)
 

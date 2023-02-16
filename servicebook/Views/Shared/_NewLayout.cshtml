@@ -41,7 +41,7 @@
                     if(User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="account" asp-action="getadminpanel">Panel</a>
+                            <a class="nav-link" asp-area="" asp-controller="account" asp-action="getadminpanel"><i class="fa fa-lock" aria-hidden="true"></i> Panel</a>
                         </li>
                     }
 
@@ -61,7 +61,7 @@
                     {
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ChangePassword"><i class="fa fa-user" aria-hidden="true"></i> @(((ClaimsIdentity)User.Identity).FindFirst("FullName").Value)(@User.Identity.Name)</a>
+                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ChangePassword"><i class="fa fa-user" aria-hidden="true"></i> @(((ClaimsIdentity)User.Identity).FindFirst("FullName").Value) (@User.Identity.Name)</a>
                         </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>                                

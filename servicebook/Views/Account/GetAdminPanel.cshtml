@@ -4,7 +4,12 @@
     <thead class="bg-white text-dark text-center border">
         <tr>
             <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Id)</span></th>
-            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Roles)</span></th>
+            
+            <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Role)</span></th>
+            @if (User.IsInRole("SuperAdmin"))
+            {
+                <th></th>
+            }
             <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.Email)</span></th>
             <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.FullName)</span></th>
             <th><span class="badge bg-dark">@Html.DisplayNameFor(model => model.PhoneNumber)</span></th>           
@@ -22,80 +27,24 @@
                     <td>
                     @Html.DisplayFor(modelItem => item.Id)
                     </td>
-                    <td>
-                    @{
-                        bool UserCheck = false;
-                        bool AdminCheck = false;
-                        bool SuperAdminCheck = false;
+                    @if(User.IsInRole("Admin"))
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Role)
+                            </td>
+                        
                     }
-                        @{if (User.IsInRole("Admin"))
-                        {
-                            int m =0;
-                            foreach (var rolex in item.Roles)
-                            {
-                                <div>@rolex</div>
-                            }  
-                            m++;
-                        }
                     
-                        else if(User.IsInRole("SuperAdmin"))
-                        {
-                            List<string> tempRoles = new List<string>()
-                            {
-                                "User",
-                                "Admin",
-                                "SuperAdmin"
-                            };
-                            
-
-                            int j =0;
-
-                                for(int k=0; k<tempRoles.Count; k++)
-                                {
-                                    foreach(var role in item.Roles)
-                                    {
-                                        if(role==tempRoles[k] && role=="User")
-                                        {
-                                            UserCheck = true;
-                                        }
-                                        else if(role==tempRoles[k] && role=="Admin")
-                                        {
-                                            AdminCheck = true;
-                                        }
-                                        else if (role == tempRoles[k] && role == "SuperAdmin")
-                                        {
-                                            SuperAdminCheck = true;
-                                        }
-                                    }   
-                                    j++;
-                                                       
-                                }
-                            
-                        <form method="post" asp-action="ChangeRole" asp-for="SelectedId" value="@item.Id">
-                                <input class="form-check-input" type="radio" name="@item.Id"  asp-for="@item.SelectedRole" value="User" checked="@UserCheck">
-                            <label >
-                                User
-                            </label>
-
-                                <input class="form-check-input"type="radio" name="@item.Id" asp-for="@item.SelectedRole" value="Admin" checked="@AdminCheck">
-                            <label >
-                                Admin
-                            </label>
-
-                                <input class="form-check-input" type="radio" name="@item.Id" asp-for="@item.SelectedRole" value="SuperAdmin" checked="@SuperAdminCheck">
-                            <label >
-                                SuperAdmin
-                            </label>
-
-                                <button type="submit" class="btn-success btn-sm" style="font-size: 0.8rem;">Save</button>
-                        </form>
                         
-                        
- 
-                        }
-
-                    }    
+                    @if(User.IsInRole("SuperAdmin"))
+                    {
+                    <td>@Html.DisplayFor(modelItem => item.Role)</td>
+                    <td>
+                        <button type="button" onclick="window.location= '@Url.Action( "changerole", "account", new {id=item.Id,fullname=item.FullName,email=item.Email, role=item.Role})'" class="btn-success btn-sm" style="font-size: 0.6rem;">Change Role</button>
                     </td>
+                       
+                    }
+                       
                     <td>
                     @Html.DisplayFor(modelItem => item.Email)
                     </td>
@@ -111,13 +60,13 @@
                     <td>
                         @if(!item.isBlocked)
                     {
-                        <form asp-controller="Account" asp-action="BlockUser" asp-route-id="@item.Id" method="post">
+                        <form asp-controller="Account" asp-action="AdminActions" asp-route-id="@item.Id" method="post">
                             <button asp-route-id="@item.Id" type="submit" class="btn-danger btn-sm" style="font-size: 0.8rem;">Block</button>
                         </form>
                     }
                     else
                     {
-                        <form asp-controller="Account" asp-action="BlockUser" asp-route-id="@item.Id" method="post">
+                        <form asp-controller="Account" asp-action="AdminActions" asp-route-id="@item.Id" method="post">
                             <button asp-route-id="@item.Id" type="submit" class="btn-secondary btn-sm" style="font-size: 0.8rem;">Unblock</button>
                         </form>
                     }

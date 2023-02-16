@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Data;
 using System.Reflection.Metadata;
 using System.Security.Claims;
 using transport.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace transport.Controllers
 {
@@ -169,8 +171,10 @@ namespace transport.Controllers
         [HttpGet("admin/panel")]
         public async Task<ActionResult<IEnumerable<AdminPanelModel>>> GetAdminPanel()
         {
+            var id = _userManager.GetUserId(User);
             var adminusers = _dbContext
                     .Users
+                    .Where(a=>a.Id != id)
                     .OrderByDescending(r => r.FullName)
                     .ToList();
 
@@ -178,18 +182,17 @@ namespace transport.Controllers
             for (int i = 0; i < adminusers.Count; i++)
             {
                 var roles = await _userManager.GetRolesAsync(adminusers[i]);
-
-                AdminPanelModel user = new AdminPanelModel()
-                {
-                    Id = adminusers[i].Id,
-                    Email = adminusers[i].Email,
-                    FullName = adminusers[i].FullName,
-                    PhoneNumber = adminusers[i].PhoneNumber,
-                    Counter = adminusers[i].Counter,
-                    isBlocked = adminusers[i].isBlocked,
-                    Roles = roles                   
-                };
-                
+                var role = roles.FirstOrDefault(r => !string.IsNullOrEmpty(r)) ?? "";
+            AdminPanelModel user = new AdminPanelModel()
+            {
+                Id = adminusers[i].Id,
+                Email = adminusers[i].Email,
+                FullName = adminusers[i].FullName,
+                PhoneNumber = adminusers[i].PhoneNumber,
+                Counter = adminusers[i].Counter,
+                isBlocked = adminusers[i].isBlocked,
+                Role = role,
+            };               
                 result.Add(user);
             }
             return View(result);
@@ -197,46 +200,53 @@ namespace transport.Controllers
 
         [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpPost("admin/panel")]
-        public IActionResult BlockUser(string id)
+        public IActionResult AdminActions(string id)
         {
             var user = _dbContext
                 .Users
                 .FirstOrDefault(u => u.Id == id);
-            if(!user.isBlocked)
+            if (!user.isBlocked)
             {
                 user.isBlocked = true;
             }
             else user.isBlocked = false;
-
             _dbContext.SaveChanges();
             return RedirectToAction("GetAdminPanel");
+
         }
-
         [Authorize(Roles = "SuperAdmin")]
-        [HttpPost("admin/panel/[action]")]
-        public IActionResult ChangeRole([FromForm]AdminPanelModel model)
+        [HttpGet("admin/panel/role/{id}/{fullname}/{role}")]
+        public IActionResult ChangeRole(string id, string fullname, string email, string role) 
         {
-
-
+            ChangeRoleModel model = new ChangeRoleModel()
+            {
+                ChangeRoleId= id,
+                ActualRole = role,
+                FullName= fullname,
+                Email= email,
+                Roles = new List<string>()
+                {
+                    "User",
+                    "Admin",
+                    "SuperAdmin"
+                }
+            };
+            return View(model);
+        }
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpPost("admin/panel/role/{id}/{fullname}/{role}")]
+        public async Task<IActionResult> ChangeRole(string id, [FromForm]ChangeRoleModel model)
+        {
             var user = _dbContext
                 .Users
-                .FirstOrDefault(u => u.Id == model.SelectedId);
-            
-
-            List<string> roles = new List<string>()
-            {
-                "User",
-                "Admin",
-                "SuperAdmin"
-            };
-            _userManager.RemoveFromRolesAsync(user, roles);
+                .FirstOrDefault(u => u.Id == id);
 
 
-                _userManager.AddToRoleAsync(user, model.SelectedRole);
+            var roles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, roles.ToArray());
+                 await _userManager.AddToRoleAsync(user, model.Role);
                 _dbContext.SaveChanges();
-
-
-            return RedirectToAction("GetAdminPanel");
+                return RedirectToAction("GetAdminPanel");
         }
     }
 }

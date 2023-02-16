@@ -7,18 +7,22 @@
 **Przykładowi użytkownicy:**
 
 **Super Admin:**  
+
 Email: superadmin@cargo.eu  
 Hasło: Secret123@
 
 **Admin:**
+
 Email: admin@cargo.eu  
 Hasło: Secret123@
 
 **User:**
+
 Email: ppotoczak@cargo.eu  
 Hasło: Secret123@
 
 **User(blocked):**
+
 Email: akowalski@cargo.eu  
 Hasło Secret123@
 

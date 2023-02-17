@@ -7,7 +7,6 @@
 **Przykładowi użytkownicy:**
 
 **Super Admin:**  
-
 Email: superadmin@cargo.eu  
 Hasło: Secret123@
 
@@ -26,7 +25,7 @@ Hasło: Secret123@
 Email: akowalski@cargo.eu  
 Hasło Secret123@
 
-
+**connectionString** = "Server=(localdb)\\\\mssqllocaldb;Database=TransportDb;Trusted\_Connection=True;"
 
 **Strona główna dla użytkowników niezalogowanych**
 
@@ -40,23 +39,23 @@ Hasło Secret123@
 
 ![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/78137e580d6c0049fceefa3f0ec1bd2a908fa54cb2a68795.png)
 
-**Może również wyświetlić wszystkie zlecenia naciskając przycisk “Search All”. Po kliknięciu w konkretne zlecenie rozwija się wiersz z dodatkowymi informacjami.**
+**Może również wyświetlić wszystkie zlecenia naciskając przycisk “GetAll”. Po kliknięciu w konkretne zlecenie rozwija się wierz z dodatkowymi informacjami.**
 
 ![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/a008ec3d1b12f49859ae48065e63f4b0138201b17e304bac.png)
 
 **Rejestracja:**
 
-![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/55d116950beeac2a301570b7e7c42473b58538fa52aa7c72.png)
+![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/e3073220c864e7aa062d6ed827ee9f92efc9ea390813eff7.png)
 
-![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/106d4dba09c684e3cb1aee1efa547bcc3c7df3bd7f6907e4.png)
+![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/f45d49821543e7b785d719c76697f352f41e27f536eab100.png)
 
 **Logowanie:**
 
-![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/c23f302f4488d88990b4d18ccf3aad8744249b2e5e63ac20.png)
+![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/5e8636f7c6ae425c2557bd3b0cacb0dafab6983e2d3a85a1.png)
 
 **Próba zalogowania przez zablokowanego użytkownika:**
 
-![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/b9e98f6eb345ab9dce891d455bdf82a703e3bd951522c830.png)
+![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/b486ed2ed3f20f79e2e245b527f7568e88d0f1a4fa344968.png)
 
 **Strona główna po zalogowaniu:**
 

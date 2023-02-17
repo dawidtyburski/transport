@@ -8,7 +8,6 @@ using System.Data;
 using System.Reflection.Metadata;
 using System.Security.Claims;
 using transport.Models;
-using Xunit.Sdk;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace transport.Controllers

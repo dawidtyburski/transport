@@ -39,7 +39,7 @@ Hasło Secret123@
 
 ![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/78137e580d6c0049fceefa3f0ec1bd2a908fa54cb2a68795.png)
 
-**Może również wyświetlić wszystkie zlecenia naciskając przycisk “GetAll”. Po kliknięciu w konkretne zlecenie rozwija się wierz z dodatkowymi informacjami.**
+**Może również wyświetlić wszystkie zlecenia naciskając przycisk “Search All”. Po kliknięciu w konkretne zlecenie rozwija się wiersz z dodatkowymi informacjami.**
 
 ![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/a008ec3d1b12f49859ae48065e63f4b0138201b17e304bac.png)
 

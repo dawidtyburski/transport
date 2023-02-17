@@ -3,6 +3,7 @@ using transport;
 using transport.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using DNTCaptcha.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,15 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddDNTCaptcha(options =>
+{
+    options.UseSessionStorageProvider()
+    .AbsoluteExpiration(minutes: 7)
+    .ShowThousandsSeparators(false)
+    .WithNoise(pixelsDensity: 25, linesCount: 3)
+    .WithEncryptionKey("This is my secure key!");
+});
 
 
 

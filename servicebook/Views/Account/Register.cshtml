@@ -49,6 +49,23 @@
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
+        <dnt-captcha asp-captcha-generator-max="30"
+                     asp-captcha-generator-min="1"
+                     asp-captcha-generator-language="English"
+                     asp-captcha-generator-display-mode="NumberToWord"
+                     asp-use-relative-urls="true"
+                     asp-placeholder="Security code as a number"
+                     asp-validation-error-message="Please enter the security code as a number."
+                     asp-font-name="Tahoma"
+                     asp-font-size="30"
+                     asp-fore-color="#333333"
+                     asp-back-color="#E5B023"
+                     asp-text-box-class="form-control"
+                     asp-text-box-template="<div class='input-group input-group-sm'><span class='input-group-text'><span class='fa fa-lock' aria-hidden='true'></span></span>{0}</div>"
+                     asp-validation-message-class="text-danger"
+                     asp-refresh-button-class="fa fa-refresh btn-sm"
+                     asp-show-refresh-button="false"
+                     asp-dir="ltr" />
             <button type="submit" class="btn-success btn-sm">Register</button>
         </form>
 

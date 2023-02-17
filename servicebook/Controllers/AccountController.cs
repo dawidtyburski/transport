@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DNTCaptcha.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
@@ -7,6 +8,7 @@ using System.Data;
 using System.Reflection.Metadata;
 using System.Security.Claims;
 using transport.Models;
+using Xunit.Sdk;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace transport.Controllers
@@ -40,6 +42,10 @@ namespace transport.Controllers
         
         [AllowAnonymous]
         [HttpPost("register")]
+        [ValidateAntiForgeryToken]
+        [ValidateDNTCaptcha(ErrorMessage = "Please enter the security code as a number.",
+                    CaptchaGeneratorLanguage = Language.English,
+                    CaptchaGeneratorDisplayMode = DisplayMode.NumberToWord)]
         public async Task<IActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
@@ -87,6 +93,9 @@ namespace transport.Controllers
         [AllowAnonymous]
         [HttpPost("login")]
         [ValidateAntiForgeryToken]
+        [ValidateDNTCaptcha(ErrorMessage = "Please enter the security code as a number.",
+                    CaptchaGeneratorLanguage = Language.English,
+                    CaptchaGeneratorDisplayMode = DisplayMode.NumberToWord)]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
             if (ModelState.IsValid)

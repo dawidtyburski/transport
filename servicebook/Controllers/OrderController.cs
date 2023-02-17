@@ -112,7 +112,7 @@ namespace transport.Controllers
             return View();
         }
         
-        [Authorize(Roles ="User")]
+        [Authorize(Roles = "User, Admin, SuperAdmin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
